@@ -1,34 +1,43 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <title>AI2JSON — Turn Any Webpage Into Clean AI-Ready JSON</title>
-  <meta name="description" content="AI2JSON turns any public webpage into clean, structured JSON designed for AI agents, LLMs and RAG pipelines, following the webpage.ai.v0.1 specification.">
+  <title>A2J — Turn Any Webpage Into Clean AI-Ready JSON</title>
+  <meta name="description" content="A2J (AI2JSON) turns any public webpage into clean, structured JSON designed for AI agents, LLMs and RAG pipelines, following the webpage.ai.v0.1 specification.">
   <style>
     :root {
       color-scheme: dark light;
-      --bg: #050816;
-      --bg-soft: #070b18;
-      --fg: #f5f5f7;
-      --fg-soft: #a0a4b8;
+      --bg: #020313;
+      --bg-alt: #050821;
+      --bg-soft: #070b1d;
+      --fg: #f7f7fb;
+      --fg-soft: #9ea3c0;
+      --fg-softer: #6e7390;
       --accent: #4f7cff;
-      --accent-soft: rgba(79,124,255,0.16);
-      --border: #262a3f;
-      --border-soft: #181b2b;
-      --radius: 16px;
-      --shadow-soft: 0 18px 40px rgba(0,0,0,0.5);
+      --accent-soft: rgba(79,124,255,0.18);
+      --accent-strong: #76e4ff;
+      --border: #272b45;
+      --border-soft: #151729;
+      --radius-lg: 18px;
+      --radius-md: 12px;
+      --shadow-soft: 0 26px 60px rgba(0,0,0,0.72);
     }
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
-      background: radial-gradient(circle at top, #151a33 0, #050816 50%);
+      background:
+        radial-gradient(circle at 0% -10%, #1b2b68 0, transparent 55%),
+        radial-gradient(circle at 100% 0%, #321b68 0, transparent 55%),
+        linear-gradient(180deg, #020313 0, #050817 55%, #020313 100%);
       color: var(--fg);
+      -webkit-font-smoothing: antialiased;
     }
+
     a {
       color: var(--accent);
       text-decoration: none;
@@ -36,46 +45,67 @@
     a:hover {
       text-decoration: underline;
     }
+
     .page {
-      max-width: 1120px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 20px 16px 72px;
+      padding: 22px 18px 80px;
     }
+
+    /* Header */
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      margin-bottom: 32px;
+      margin-bottom: 34px;
     }
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
-    .logo-mark {
-      width: 30px;
-      height: 30px;
+    .logo-orb {
+      width: 34px;
+      height: 34px;
       border-radius: 999px;
-      background: conic-gradient(from 150deg, #4f7cff, #5bd0ff, #9f6bff, #4f7cff);
+      background:
+        conic-gradient(from 170deg, #4f7cff, #86e3ff, #c19bff, #4f7cff);
+      position: relative;
+      box-shadow:
+        0 0 0 2px #020313,
+        0 18px 32px rgba(0,0,0,0.65);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: #fff;
-      box-shadow: 0 0 0 2px #050816;
-    }
-    .logo-text {
-      font-weight: 600;
-      letter-spacing: 0.02em;
+      font-weight: 700;
       font-size: 15px;
+      color: #fff;
     }
-    .logo-sub {
-      display: block;
+    .logo-orb::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border-radius: inherit;
+      background: radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 55%);
+      mix-blend-mode: screen;
+    }
+    .logo-orb span {
+      position: relative;
+      z-index: 1;
+      letter-spacing: 0.05em;
+    }
+    .logo-text-main {
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .logo-text-sub {
       font-size: 11px;
       color: var(--fg-soft);
     }
+
     nav {
       display: flex;
       align-items: center;
@@ -90,27 +120,26 @@
     }
     nav a:hover {
       color: var(--fg);
-      text-decoration: none;
     }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+
+    .nav-cta {
       padding: 8px 16px;
       border-radius: 999px;
-      border: 1px solid transparent;
-      font-size: 13px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: radial-gradient(circle at 0 0, rgba(118,228,255,0.14), transparent 55%);
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 12px;
       font-weight: 500;
-      cursor: pointer;
-      background: var(--accent);
-      color: #fff;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-    .btn.outline {
-      background: transparent;
-      border-color: var(--border);
       color: var(--fg);
+    }
+    .nav-cta span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #2cf5aa;
+      box-shadow: 0 0 0 4px rgba(44,245,170,0.2);
     }
 
     @media (max-width: 860px) {
@@ -123,54 +152,69 @@
       }
     }
 
+    /* Hero layout */
     main {
       display: grid;
-      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1.1fr);
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
       gap: 32px;
       align-items: flex-start;
     }
-    @media (max-width: 880px) {
+    @media (max-width: 900px) {
       main {
         grid-template-columns: minmax(0, 1fr);
       }
     }
 
+    .eyebrow-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
     .eyebrow {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 4px 10px;
+      padding: 4px 11px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(2,3,19,0.8);
       font-size: 11px;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--fg-soft);
-      margin-bottom: 14px;
     }
-    .eyebrow span.badge {
-      padding: 2px 8px;
+    .eyebrow-badge {
+      padding: 3px 9px;
       border-radius: 999px;
       background: var(--accent-soft);
+      color: #dde5ff;
       letter-spacing: 0;
       text-transform: none;
-      color: #dbe5ff;
       font-weight: 500;
     }
+
     h1 {
-      margin: 0 0 14px;
-      font-size: clamp(32px, 4.8vw, 44px);
-      line-height: 1.08;
+      margin: 0 0 12px;
+      font-size: clamp(32px, 4.6vw, 46px);
+      line-height: 1.05;
     }
+    h1 span.highlight {
+      background-image: linear-gradient(120deg, #76e4ff, #c19bff);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
     .lead {
       font-size: 15px;
-      line-height: 1.6;
+      line-height: 1.65;
       color: var(--fg-soft);
-      max-width: 540px;
+      max-width: 560px;
       margin-bottom: 18px;
     }
-    .pill-row {
+
+    .hero-pills {
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -180,61 +224,157 @@
       padding: 4px 10px;
       border-radius: 999px;
       border: 1px solid var(--border);
-      background: rgba(7,11,24,0.9);
+      background: rgba(6,8,29,0.9);
       font-size: 11px;
       color: var(--fg-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent-strong);
+    }
+
     .cta-row {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
       align-items: center;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: 0;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      background: linear-gradient(135deg, #4f7cff, #76e4ff);
+      color: #020313;
+      text-decoration: none;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.6);
+    }
+    .btn span.chevron {
+      font-size: 12px;
+      margin-left: 4px;
+    }
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.14);
+      font-size: 13px;
+      color: var(--fg);
+      background: rgba(4,6,25,0.7);
+      text-decoration: none;
+    }
+
     .hero-note {
       font-size: 11px;
-      color: var(--fg-soft);
+      color: var(--fg-softer);
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
     .hero-note span {
       padding: 3px 8px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(2,4,19,0.9);
     }
 
-    .card {
-      border-radius: var(--radius);
-      border: 1px solid var(--border-soft);
-      background: rgba(8,11,28,0.96);
-      padding: 14px 14px 16px;
+    /* Example panel */
+    .hero-panel {
+      border-radius: 22px;
+      border: 1px solid rgba(112,136,255,0.3);
+      background:
+        radial-gradient(circle at 0 0, rgba(118,228,255,0.18), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(83,124,255,0.22), transparent 65%),
+        linear-gradient(145deg, #050821, #020313);
+      padding: 14px 16px 16px;
       box-shadow: var(--shadow-soft);
       font-size: 13px;
+      position: relative;
+      overflow: hidden;
     }
-    .card-title {
+    .hero-panel::before {
+      content: "A2J · LIVE EXAMPLE";
+      position: absolute;
+      right: 16px;
+      top: 12px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: rgba(223,230,255,0.45);
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .panel-title {
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--fg-soft);
-      margin-bottom: 8px;
     }
-    .code-header {
+    .panel-tabs {
+      display: inline-flex;
+      gap: 4px;
+      background: rgba(2,4,18,0.8);
+      padding: 3px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 11px;
+    }
+    .panel-tabs span {
+      padding: 3px 9px;
+      border-radius: 999px;
+      cursor: default;
+    }
+    .panel-tabs span.active {
+      background: rgba(255,255,255,0.08);
+      color: #fff;
+    }
+
+    .code-window {
+      border-radius: 14px;
+      border: 1px solid rgba(26,33,68,0.95);
+      background: radial-gradient(circle at 10% 0, #161c3e, #050821);
+      padding: 9px 10px 10px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      color: #dde3ff;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+    .code-window-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 6px;
-      font-size: 11px;
-      color: var(--fg-soft);
+      font-size: 10px;
+      color: var(--fg-softer);
     }
     .dots {
       display: inline-flex;
       gap: 4px;
     }
     .dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
       background: #ff5f57;
     }
@@ -242,49 +382,46 @@
     .dot:nth-child(3) { background: #28c840; }
     .code-pill {
       border-radius: 999px;
-      border: 1px solid var(--border);
+      border: 1px solid rgba(255,255,255,0.12);
       padding: 2px 7px;
     }
-    .code-block {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      background: #050814;
-      border-radius: 10px;
-      border: 1px solid #20253a;
-      padding: 10px 11px;
-      overflow-x: auto;
-      white-space: pre;
-      line-height: 1.5;
-    }
-    .hint {
-      margin-top: 10px;
+    .panel-footer {
       font-size: 11px;
       color: var(--fg-soft);
     }
 
+    /* Sections */
     section {
-      margin-top: 42px;
+      margin-top: 52px;
+    }
+    .section-kicker {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-soft);
+      margin-bottom: 6px;
     }
     h2.section-title {
-      font-size: 20px;
+      font-size: 22px;
       margin: 0 0 8px;
     }
     .section-sub {
       font-size: 13px;
       color: var(--fg-soft);
-      max-width: 640px;
-      margin-bottom: 18px;
+      max-width: 720px;
+      margin-bottom: 20px;
     }
+
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+      gap: 16px;
     }
     .feature {
-      border-radius: var(--radius);
+      border-radius: var(--radius-lg);
       border: 1px solid var(--border-soft);
-      padding: 12px 12px 13px;
-      background: rgba(8,11,28,0.9);
+      padding: 13px 14px 15px;
+      background: radial-gradient(circle at 0 0, rgba(118,228,255,0.08), transparent 70%), rgba(5,8,28,0.96);
       font-size: 13px;
     }
     .feature h3 {
@@ -294,7 +431,7 @@
     .feature p {
       margin: 0;
       font-size: 12px;
-      line-height: 1.55;
+      line-height: 1.6;
       color: var(--fg-soft);
     }
     .tag-row {
@@ -308,50 +445,58 @@
       padding: 2px 7px;
       border-radius: 999px;
       border: 1px solid var(--border);
+      background: rgba(0,0,0,0.28);
       color: var(--fg-soft);
-      background: rgba(0,0,0,0.25);
     }
 
+    /* Table spec */
+    .table-wrap {
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+      background: rgba(5,8,30,0.97);
+    }
     .table {
       width: 100%;
       border-collapse: collapse;
       font-size: 12px;
-      margin-top: 8px;
     }
     .table th,
     .table td {
+      padding: 7px 10px;
       text-align: left;
-      padding: 6px 8px;
-      border-bottom: 1px solid var(--border-soft);
+      border-bottom: 1px solid rgba(32,36,66,0.9);
     }
     .table th {
-      font-weight: 500;
-      color: var(--fg-soft);
       font-size: 11px;
+      color: var(--fg-soft);
       text-transform: uppercase;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.12em;
+      background: rgba(10,13,40,0.85);
+    }
+    .table tr:last-child td {
+      border-bottom: none;
     }
     .table code {
       font-size: 11px;
     }
-    .table-wrap {
-      border-radius: 12px;
-      border: 1px solid var(--border-soft);
-      overflow: hidden;
-      background: rgba(7,10,23,0.95);
-    }
 
+    /* Pricing */
     .pricing-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
+      gap: 16px;
     }
     .pricing-card {
-      border-radius: var(--radius);
-      border: 1px solid var(--border-soft);
-      background: rgba(8,11,28,0.96);
-      padding: 14px 14px 16px;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255,255,255,0.06);
+      background: radial-gradient(circle at 0 0, rgba(79,124,255,0.18), transparent 70%), rgba(4,7,28,0.96);
+      padding: 14px 15px 16px;
       font-size: 13px;
+    }
+    .pricing-card.highlight {
+      border-color: rgba(118,228,255,0.7);
+      box-shadow: 0 22px 50px rgba(0,0,0,0.75);
     }
     .pricing-name {
       font-weight: 600;
@@ -365,20 +510,25 @@
     .pricing-list {
       list-style: none;
       padding: 0;
-      margin: 0;
+      margin: 0 0 8px;
       font-size: 12px;
       color: var(--fg-soft);
     }
     .pricing-list li {
       margin-bottom: 4px;
     }
+    .pricing-price {
+      font-size: 12px;
+      color: var(--fg-soft);
+      font-style: italic;
+    }
 
     .mono-block {
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       font-size: 11px;
       background: #050814;
-      border-radius: 10px;
-      border: 1px solid #20253a;
+      border-radius: var(--radius-md);
+      border: 1px solid #222845;
       padding: 10px 11px;
       overflow-x: auto;
       white-space: pre;
@@ -386,9 +536,9 @@
     }
 
     footer {
-      margin-top: 40px;
+      margin-top: 44px;
       padding-top: 18px;
-      border-top: 1px solid var(--border-soft);
+      border-top: 1px solid rgba(27,31,60,0.95);
       font-size: 11px;
       color: var(--fg-soft);
       display: flex;
@@ -414,10 +564,10 @@
   <div class="page">
     <header>
       <div class="brand">
-        <div class="logo-mark">A2</div>
+        <div class="logo-orb"><span>A2J</span></div>
         <div>
-          <div class="logo-text">AI2JSON</div>
-          <span class="logo-sub">Clean JSON from any webpage. Ready for AI.</span>
+          <div class="logo-text-main">A2J · AI2JSON</div>
+          <div class="logo-text-sub">The web, pre-parsed for AI agents and RAG.</div>
         </div>
       </div>
       <nav>
@@ -425,54 +575,65 @@
         <a href="#spec">webpage.ai</a>
         <a href="#use-cases">Use cases</a>
         <a href="#pricing">Pricing</a>
-        <a href="#docs">Docs</a>
-        <a class="btn outline" href="#docs">Get started</a>
+        <a href="#docs">API</a>
+        <a class="nav-cta" href="#docs"><span class="dot"></span> Early access</a>
       </nav>
     </header>
 
     <main>
       <div>
-        <div class="eyebrow">
-          <span>Public Beta</span>
-          <span class="badge">Web → JSON for AI</span>
+        <div class="eyebrow-row">
+          <div class="eyebrow">Public Beta</div>
+          <div class="eyebrow"><span class="eyebrow-badge">A2J</span> Web → JSON for AI</div>
         </div>
-        <h1>Turn any public webpage into clean AI-ready JSON.</h1>
+        <h1><span class="highlight">A2J</span> turns any public webpage into clean AI-ready JSON.</h1>
         <p class="lead">
-          AI2JSON fetches a URL, extracts the main content, cleans it, structures it into sections, adds metadata and a content hash, and returns a single, predictable JSON document following the <strong>webpage.ai.v0.1</strong> spec.
+          A2J (AI2JSON) fetches a URL, extracts the real content, cleans it, structures it into sections, adds metadata and a content hash, and returns a single, predictable JSON document following the <strong>webpage.ai.v0.1</strong> spec.
         </p>
-        <div class="pill-row">
-          <div class="pill">No HTML parsing</div>
-          <div class="pill">Sections &amp; headings</div>
-          <div class="pill">Language &amp; metadata</div>
+        <div class="hero-pills">
+          <div class="pill"><span class="pill-dot"></span>No HTML parsing in your code</div>
+          <div class="pill">Structured <code>sections[]</code> with headings</div>
+          <div class="pill">Language, type and metadata</div>
           <div class="pill">Factual summary (v0.1)</div>
-          <div class="pill">SHA-256 content hash</div>
+          <div class="pill">SHA-256 fingerprint of content</div>
         </div>
         <div class="cta-row">
-          <a href="#docs" class="btn">View API docs</a>
-          <a href="#spec" class="btn outline">See JSON format</a>
+          <a href="#docs" class="btn">View API quickstart <span class="chevron">›</span></a>
+          <a href="#spec" class="btn-outline">See full JSON format</a>
         </div>
         <div class="hero-note">
           <span>Spec: <strong>webpage.ai.v0.1</strong></span>
           <span>Designed for LLMs, agents and RAG pipelines.</span>
+          <span>One URL in, one JSON contract out.</span>
         </div>
       </div>
 
-      <aside class="card" id="example">
-        <div class="card-title">Example request</div>
-        <div class="code-header">
-          <div class="dots">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      <aside class="hero-panel" id="example">
+        <div class="panel-header">
+          <div class="panel-title">From URL to AI-ready JSON</div>
+          <div class="panel-tabs">
+            <span class="active">Request</span>
+            <span>Response</span>
           </div>
-          <span class="code-pill">curl · JSON</span>
         </div>
-        <div class="code-block">
+
+        <div class="code-window">
+          <div class="code-window-header">
+            <div class="dots">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+            <span class="code-pill">curl · A2J</span>
+          </div>
 curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"
         </div>
 
-        <div class="card-title" style="margin-top:12px;">Excerpt of response (webpage.ai.v0.1)</div>
-        <div class="code-block">
+        <div class="code-window">
+          <div class="code-window-header">
+            <span>Excerpt of <code>webpage.ai.v0.1</code></span>
+            <span class="code-pill">JSON</span>
+          </div>
 {
   "spec": "webpage.ai.v0.1",
   "url": "https://example.com/article-ai",
@@ -496,41 +657,44 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
   "proof": {}
 }
         </div>
-        <p class="hint">
-          Feed this JSON directly into your LLM prompts, agents, or RAG pipelines — no custom scraping, no brittle HTML logic.
-        </p>
+
+        <div class="panel-footer">
+          Feed this JSON directly into prompts, tools, agents or RAG — with a stable schema and a hash that proves exactly what your AI has read.
+        </div>
       </aside>
     </main>
 
     <section id="how">
-      <h2 class="section-title">How AI2JSON works</h2>
+      <div class="section-kicker">How A2J works</div>
+      <h2 class="section-title">A thin, opinionated layer between the web and your AI stack.</h2>
       <p class="section-sub">
-        AI2JSON acts as a thin, stateless bridge between the messy HTML of the public web and a stable JSON contract designed specifically for AI workloads.
+        A2J is intentionally minimal: one endpoint, one spec, stateless by design. It focuses on turning messy HTML into the clean JSON you wish the web had been built with.
       </p>
       <div class="grid">
         <div class="feature">
-          <h3>1. Fetch &amp; detect</h3>
-          <p>AI2JSON fetches the target URL, follows redirects when necessary and detects the main content area using a reader-style heuristic.</p>
+          <h3>1. Fetch and detect</h3>
+          <p>A2J fetches the target URL, follows redirects when needed and detects the main content using a reader-style heuristic instead of scraping everything.</p>
         </div>
         <div class="feature">
-          <h3>2. Clean &amp; normalize</h3>
-          <p>Navigation, ads, scripts and layout noise are removed. The remaining text is normalized to a consistent structure with predictable spacing.</p>
+          <h3>2. Clean and normalize</h3>
+          <p>Navigation, ads, scripts and layout noise are stripped away. The remaining content is normalized with consistent spacing and line-breaking.</p>
         </div>
         <div class="feature">
           <h3>3. Structure into sections</h3>
-          <p>Headings and paragraphs are grouped into <code>sections[]</code>, each with a heading, level, id and clean text field that LLMs can consume directly.</p>
+          <p>Headings and paragraphs are grouped into <code>sections[]</code>, each with a heading, level, id and text field, so agents and RAG pipelines can reason section by section.</p>
         </div>
         <div class="feature">
-          <h3>4. Summarize &amp; fingerprint</h3>
-          <p>A short factual summary is generated and a SHA-256 hash is computed over the extracted text, giving you a stable fingerprint of what was read.</p>
+          <h3>4. Summarize and fingerprint</h3>
+          <p>A factual summary is generated and a SHA-256 hash over the extracted text becomes a stable fingerprint. You know exactly what was read and when.</p>
         </div>
       </div>
     </section>
 
     <section id="spec">
-      <h2 class="section-title">The <code>webpage.ai.v0.1</code> JSON format</h2>
+      <div class="section-kicker">JSON format</div>
+      <h2 class="section-title">The <code>webpage.ai.v0.1</code> contract.</h2>
       <p class="section-sub">
-        AI2JSON returns a single JSON document per page, using a compact, versioned spec. The contract is designed to stay stable across implementations and upgrades.
+        Every A2J response is a single JSON document, designed to be easy to ingest and stable over time. No guessing, no reverse-engineering, no undocumented fields.
       </p>
       <div class="table-wrap">
         <table class="table">
@@ -560,12 +724,12 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
           <tr>
             <td><code>last_fetched</code></td>
             <td>string</td>
-            <td>ISO 8601 UTC timestamp of the snapshot.</td>
+            <td>ISO&nbsp;8601 UTC timestamp of the snapshot.</td>
           </tr>
           <tr>
             <td><code>language</code></td>
             <td>string</td>
-            <td>Best-guess language code, e.g. <code>"en"</code> or <code>"fr"</code>.</td>
+            <td>Best-guess language, for example <code>"en"</code> or <code>"fr"</code>.</td>
           </tr>
           <tr>
             <td><code>content_hash</code></td>
@@ -580,7 +744,7 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
           <tr>
             <td><code>summary</code></td>
             <td>string</td>
-            <td>Short factual summary of the content.</td>
+            <td>Short factual summary of the page content.</td>
           </tr>
           <tr>
             <td><code>type</code></td>
@@ -600,30 +764,31 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
           <tr>
             <td><code>meta</code></td>
             <td>object</td>
-            <td>Best-effort metadata like site name, author, dates, tags.</td>
+            <td>Best-effort metadata such as site name, author, dates, tags.</td>
           </tr>
           <tr>
             <td><code>proof</code></td>
             <td>object</td>
-            <td>Reserved for future content integrity proofs.</td>
+            <td>Reserved for future content-integrity proofs.</td>
           </tr>
           </tbody>
         </table>
       </div>
       <p class="section-sub" style="margin-top:10px;">
-        The formal specification lives in <code>spec/webpage-ai-v0.1.md</code> in the repository and is kept stable across the whole v0.1 lifecycle.
+        The formal specification lives in <code>spec/webpage-ai-v0.1.md</code> in the repository and is kept stable for all of v0.1.
       </p>
     </section>
 
     <section id="use-cases">
-      <h2 class="section-title">Built for AI agents, LLMs and RAG pipelines</h2>
+      <div class="section-kicker">Who A2J is for</div>
+      <h2 class="section-title">A single JSON bridge for AI agents, RAG and monitoring.</h2>
       <p class="section-sub">
-        AI2JSON is designed for teams who want to give models a consistent view of the web, without maintaining their own scraping stack.
+        Any time a model needs to “read” the public web, A2J can sit between the page and your AI stack, delivering a stable contract instead of raw HTML.
       </p>
       <div class="grid">
         <div class="feature">
-          <h3>Agents that read the web</h3>
-          <p>Let your agents consume structured sections instead of raw HTML, with stable IDs and a consistent schema.</p>
+          <h3>Agents that browse</h3>
+          <p>Let LLM agents consume structured sections instead of brittle HTML, with stable IDs they can reference and revisit.</p>
           <div class="tag-row">
             <span class="tag">LLM agents</span>
             <span class="tag">Tool calls</span>
@@ -631,8 +796,8 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
           </div>
         </div>
         <div class="feature">
-          <h3>RAG &amp; knowledge pipelines</h3>
-          <p>Pre-clean content before embedding, chunking or indexing. Use the <code>content_hash</code> as a stable key.</p>
+          <h3>RAG and knowledge pipelines</h3>
+          <p>Pre-clean content before embedding or indexing. Use <code>content_hash</code> as a stable key, and <code>sections[]</code> as natural chunks.</p>
           <div class="tag-row">
             <span class="tag">RAG</span>
             <span class="tag">Vector stores</span>
@@ -640,8 +805,8 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
           </div>
         </div>
         <div class="feature">
-          <h3>Monitoring &amp; compliance</h3>
-          <p>Monitor specific pages for changes in the underlying content and use hashes to detect when something actually changed.</p>
+          <h3>Monitoring and compliance</h3>
+          <p>Track important pages (regulations, docs, terms) and detect meaningful content changes instead of layout noise.</p>
           <div class="tag-row">
             <span class="tag">Regulations</span>
             <span class="tag">Docs</span>
@@ -649,11 +814,11 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
           </div>
         </div>
         <div class="feature">
-          <h3>Developer tools &amp; crawlers</h3>
-          <p>Replace ad-hoc scrapers with a single, documented API. Keep your application logic focused on what the model needs.</p>
+          <h3>Developer tools and crawlers</h3>
+          <p>Replace internal scraping stacks with a single, documented API. Keep your code focused on reasoning, not parsing.</p>
           <div class="tag-row">
-            <span class="tag">SDKs</span>
             <span class="tag">Dev tools</span>
+            <span class="tag">CLI / SDKs</span>
             <span class="tag">Automation</span>
           </div>
         </div>
@@ -661,48 +826,53 @@ curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
     </section>
 
     <section id="pricing">
-      <h2 class="section-title">Early access and pricing</h2>
+      <div class="section-kicker">Early access</div>
+      <h2 class="section-title">Simple plans while A2J grows.</h2>
       <p class="section-sub">
-        AI2JSON starts with a simple, developer-friendly model: a small free tier for experiments, predictable paid tiers for projects and teams, and custom plans for companies that need higher volume and SLAs.
+        A2J starts with a developer-friendly free tier and scales to production workloads. During the beta, pricing and limits are intentionally simple and transparent.
       </p>
       <div class="pricing-grid">
         <div class="pricing-card">
           <div class="pricing-name">Free · Developer sandbox</div>
-          <div class="pricing-note">For trying the API and small experiments.</div>
+          <div class="pricing-note">Try A2J, wire it into agents and side-projects.</div>
           <ul class="pricing-list">
             <li>Limited requests per month</li>
             <li>Single API key</li>
             <li>Access to <code>/v1/transform</code></li>
-            <li>Same JSON format as paid tiers</li>
+            <li>Same JSON spec as paid plans</li>
           </ul>
+          <div class="pricing-price">Best for experiments and prototypes.</div>
         </div>
-        <div class="pricing-card">
-          <div class="pricing-name">Pro · Projects &amp; teams</div>
-          <div class="pricing-note">For production workloads and internal tools.</div>
+        <div class="pricing-card highlight">
+          <div class="pricing-name">Pro · Projects and teams</div>
+          <div class="pricing-note">For production-grade agents, RAG and internal tools.</div>
           <ul class="pricing-list">
-            <li>Higher request quotas</li>
-            <li>Multiple API keys</li>
+            <li>Higher, predictable monthly quotas</li>
+            <li>Multiple API keys per team</li>
             <li>Priority support for issues</li>
-            <li>Roadmap features as they ship</li>
+            <li>Access to new endpoints as they ship</li>
           </ul>
+          <div class="pricing-price">Designed for serious workloads without complexity.</div>
         </div>
         <div class="pricing-card">
           <div class="pricing-name">Enterprise · Custom</div>
-          <div class="pricing-note">For companies and high-volume agents.</div>
+          <div class="pricing-note">For companies and high-volume platforms.</div>
           <ul class="pricing-list">
             <li>Custom limits and SLAs</li>
-            <li>Dedicated endpoints and IPs</li>
-            <li>Advanced monitoring and reporting</li>
-            <li>Optional on-prem or private deployment</li>
+            <li>Dedicated endpoints and IP ranges</li>
+            <li>Advanced observability and reporting</li>
+            <li>Optional private or on-prem deployment</li>
           </ul>
+          <div class="pricing-price">Contact us to discuss requirements.</div>
         </div>
       </div>
     </section>
 
     <section id="docs">
-      <h2 class="section-title">API in one glance</h2>
+      <div class="section-kicker">API at a glance</div>
+      <h2 class="section-title">A single stateless endpoint in v0.1.</h2>
       <p class="section-sub">
-        AI2JSON v0.1 exposes a single, stateless endpoint. You send a URL and an API key, you receive a <code>webpage.ai.v0.1</code> document.
+        The first version of A2J is intentionally small: one endpoint, one spec, no surprises. You send a URL and an API key, you receive a <code>webpage.ai.v0.1</code> document.
       </p>
       <div class="mono-block">
 Base URL (example)
@@ -718,49 +888,53 @@ Headers
 Query parameters
   url       Required. Public page URL to transform.
   lang      Optional. Preferred language for future advanced summaries.
-  no_cache  Optional. If true, forces a fresh fetch.
+  no_cache  Optional. If true, forces a fresh fetch instead of using cache.
 
 Behaviour
   200 OK    Body is a webpage.ai.v0.1 JSON document.
-  4xx       Client errors (missing url, invalid url, auth, etc.).
+  400       Invalid or missing url parameter.
+  401       Missing or invalid API key.
+  4xx       Other client errors.
   5xx       Upstream or internal errors, with JSON error payload.
       </div>
       <p class="section-sub" style="margin-top:10px;">
-        A more detailed documentation (including error codes and edge cases) lives in the repository and will evolve as the API grows from v0.1 to v1.0.
+        Full documentation, examples and language-specific snippets live in the GitHub repository and will grow with the product.
       </p>
     </section>
 
     <section id="roadmap">
-      <h2 class="section-title">Roadmap</h2>
+      <div class="section-kicker">Roadmap</div>
+      <h2 class="section-title">From focused utility to a standard way for AI to read the web.</h2>
       <p class="section-sub">
-        AI2JSON starts small on purpose. The goal is to keep the core contract stable while adding capabilities that matter for real AI workloads.
+        A2J is built to stay small at the surface and powerful under the hood. The goal is to keep the core contract stable while adding capabilities that matter for real AI workloads.
       </p>
       <div class="grid">
         <div class="feature">
           <h3>v0.1 · HTML → JSON</h3>
-          <p>Single endpoint, <code>webpage.ai.v0.1</code> spec, basic extraction and summary, single API key flow for early users.</p>
+          <p>Single endpoint, <code>webpage.ai.v0.1</code> spec, basic extraction and summary, single early-access API key flow.</p>
         </div>
         <div class="feature">
           <h3>v0.2 · Smarter summaries</h3>
-          <p>LLM-powered summaries with explicit language control, improved metadata, better handling of long technical pages.</p>
+          <p>LLM-powered summaries with explicit language control, improved metadata, and better handling of long technical documents.</p>
         </div>
         <div class="feature">
           <h3>v0.3 · Dynamic pages</h3>
-          <p>Optional JavaScript rendering for SPAs and dashboards, with the same JSON contract.</p>
+          <p>Optional JavaScript rendering for SPAs and dashboards, with the same JSON contract for downstream consumers.</p>
         </div>
         <div class="feature">
           <h3>v1.0 · Production standard</h3>
-          <p>Dashboards, multi-key management, quotas, monitoring, webhooks, and a fully versioned specification.</p>
+          <p>Dashboards, key management, quotas, monitoring, webhooks, and a formally versioned specification for long-term stability.</p>
         </div>
       </div>
     </section>
 
     <footer>
-      <span>© AI2JSON. The web, in a format AIs can understand.</span>
+      <span>© A2J · AI2JSON. The web, in a format AIs can understand.</span>
       <nav>
         <a href="#spec">Spec</a>
-        <a href="#docs">Docs</a>
+        <a href="#docs">API</a>
         <a href="#pricing">Pricing</a>
+        <a href="#roadmap">Roadmap</a>
         <a href="#">GitHub</a>
         <a href="mailto:contact@ai2json.com">Contact</a>
       </nav>
@@ -768,3 +942,4 @@ Behaviour
   </div>
 </body>
 </html>
+`
