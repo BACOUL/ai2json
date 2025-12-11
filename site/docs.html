@@ -6,6 +6,7 @@
   <meta name="color-scheme" content="dark light">
   <title>A2J — API Docs (v0.1)</title>
   <meta name="description" content="A2J API docs. Quickstart, auth, endpoint, parameters, response schema, and error codes for webpage.ai.v0.1.">
+  <meta name="robots" content="index,follow">
   <style>
     :root {
       color-scheme: dark light;
@@ -135,6 +136,7 @@
       line-height: 1.5;
       color: #dde3ff;
     }
+    .mono code { color: inherit; }
     .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
 
     .toc {
@@ -174,6 +176,28 @@
     section { scroll-margin-top: 16px; }
     .kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--fg-soft); margin-bottom: 6px; }
 
+    .mini-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .btn-mini {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(2,4,19,0.9);
+      color: var(--fg);
+      font-size: 12px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn-mini:hover { background: rgba(255,255,255,0.06); text-decoration: none; }
+    .btn-mini:active { transform: translateY(1px); }
+
     footer {
       margin-top: 44px;
       padding-top: 18px;
@@ -189,23 +213,30 @@
     footer nav { display: flex; gap: 12px; flex-wrap: wrap; }
     footer a { color: var(--fg-soft); }
     footer a:hover { color: var(--fg); }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
   <div class="page">
     <header>
       <div class="brand">
-        <div class="logo-orb"><span>A2J</span></div>
-        <div>
-          <div class="logo-text-main">A2J · AI2JSON</div>
-          <div class="logo-text-sub">API Docs · v0.1</div>
-        </div>
+        <a href="./index.html" class="brand" style="gap:12px;">
+          <div class="logo-orb"><span>A2J</span></div>
+          <div>
+            <div class="logo-text-main">A2J · AI2JSON</div>
+            <div class="logo-text-sub">API Docs · v0.1</div>
+          </div>
+        </a>
       </div>
       <nav>
         <a href="./index.html#how">How it works</a>
-        <a href="./index.html#spec">webpage.ai</a>
+        <a href="./spec.html">webpage.ai</a>
         <a href="./index.html#pricing">Pricing</a>
         <a href="./docs.html">API</a>
+        <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a class="nav-cta" href="./index.html#docs"><span class="dot"></span> Get access</a>
       </nav>
     </header>
@@ -221,6 +252,11 @@
         <span class="pill"><span class="dot"></span>Stable schema</span>
         <span class="pill"><span class="dot"></span>Content hash</span>
       </div>
+      <div class="mini-actions" aria-label="Quick actions">
+        <button class="btn-mini" type="button" data-copy="#snippet-curl">Copy curl</button>
+        <button class="btn-mini" type="button" data-copy="#snippet-auth">Copy auth header</button>
+        <button class="btn-mini" type="button" data-copy="#snippet-base">Copy base URL</button>
+      </div>
     </div>
 
     <div class="layout">
@@ -229,19 +265,15 @@
           <div class="kicker">Base</div>
           <h2>Base URL</h2>
           <p>Use this as a placeholder until you deploy your Cloudflare Worker endpoint.</p>
-          <div class="mono">https://api.ai2json.com</div>
+          <div class="mono" id="snippet-base">https://api.ai2json.com</div>
         </section>
 
         <section id="auth" class="card">
           <div class="kicker">Authentication</div>
           <h2>API Key</h2>
-          <p>
-            Send your key using the Authorization header:
-          </p>
-          <div class="mono">Authorization: Bearer YOUR_API_KEY</div>
-          <p>
-            If the key is missing or invalid, the API returns <code>401</code>.
-          </p>
+          <p>Send your key using the Authorization header:</p>
+          <div class="mono" id="snippet-auth">Authorization: Bearer YOUR_API_KEY</div>
+          <p>If the key is missing or invalid, the API returns <code>401</code>.</p>
         </section>
 
         <section id="endpoint" class="card">
@@ -250,7 +282,7 @@
           <p><strong>GET</strong> <code>/v1/transform</code> converts a public URL into a <code>webpage.ai.v0.1</code> document.</p>
           <div class="mono">GET /v1/transform?url=&lt;ENCODED_URL&gt;</div>
           <p>Example:</p>
-          <div class="mono">curl "https://api.ai2json.com/v1/transform?url=https://example.com/article" \
+          <div class="mono" id="snippet-curl">curl "https://api.ai2json.com/v1/transform?url=https://example.com/article" \
   -H "Authorization: Bearer YOUR_API_KEY" \
   -H "Accept: application/json"</div>
         </section>
@@ -285,6 +317,7 @@ no_cache  Optional. If true, forces a fresh fetch.</div>
   "meta": {},
   "proof": {}
 }</div>
+          <p>Full field definitions live in the spec: <a href="./spec.html">webpage.ai.v0.1</a>.</p>
         </section>
 
         <section id="errors" class="card">
@@ -314,6 +347,9 @@ no_cache  Optional. If true, forces a fresh fetch.</div>
         <a href="#params">Parameters</a>
         <a href="#response">Response</a>
         <a href="#errors">Errors</a>
+        <div style="margin-top:10px; font-size:11px; color: var(--fg-softer); padding: 0 10px;">
+          Next: <a href="./spec.html">Spec</a> · <a href="./index.html">Home</a>
+        </div>
       </aside>
     </div>
 
@@ -322,11 +358,44 @@ no_cache  Optional. If true, forces a fresh fetch.</div>
       <nav>
         <a href="./index.html">Home</a>
         <a href="./docs.html">Docs</a>
-        <a href="./index.html#spec">Spec</a>
-        <a href="#">GitHub</a>
+        <a href="./spec.html">Spec</a>
+        <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./terms.html">Terms</a>
         <a href="mailto:contact@ai2json.com">Contact</a>
       </nav>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      function copyText(text) {
+        if (!text) return;
+        if (navigator.clipboard && window.isSecureContext) {
+          return navigator.clipboard.writeText(text);
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest("[data-copy]");
+        if (!btn) return;
+        const sel = btn.getAttribute("data-copy");
+        const el = sel ? document.querySelector(sel) : null;
+        const text = el ? (el.innerText || el.textContent || "").trim() : "";
+        copyText(text);
+        btn.textContent = "Copied";
+        setTimeout(() => { btn.textContent = btn.getAttribute("data-copy") === "#snippet-curl" ? "Copy curl" : (btn.getAttribute("data-copy") === "#snippet-auth" ? "Copy auth header" : "Copy base URL"); }, 900);
+      });
+    })();
+  </script>
 </body>
-        </html>
+</html>
