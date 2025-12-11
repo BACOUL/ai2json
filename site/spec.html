@@ -4,419 +4,261 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <title>A2J — webpage.ai.v0.1 Spec</title>
-  <meta name="description" content="webpage.ai.v0.1 specification: the stable JSON contract produced by A2J to transform any public webpage into AI-ready structured JSON.">
+  <title>A2J — Spec: webpage.ai.v0.1</title>
+  <meta name="description" content="webpage.ai.v0.1 specification used by A2J (AI2JSON): stable JSON contract for turning any public webpage into AI-ready structured content.">
+  <meta name="robots" content="index,follow">
   <style>
-    :root {
+    :root{
       color-scheme: dark light;
-      --bg: #020313;
-      --bg-alt: #050821;
-      --bg-soft: #070b1d;
-      --fg: #f7f7fb;
-      --fg-soft: #9ea3c0;
-      --fg-softer: #6e7390;
-      --accent: #4f7cff;
-      --accent-soft: rgba(79,124,255,0.18);
-      --accent-strong: #76e4ff;
-      --border: #272b45;
-      --border-soft: #151729;
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --shadow-soft: 0 26px 60px rgba(0,0,0,0.72);
+      --bg:#020313; --bg-alt:#050821; --bg-soft:#070b1d;
+      --fg:#f7f7fb; --fg-soft:#9ea3c0; --fg-softer:#6e7390;
+      --accent:#4f7cff; --accent-soft:rgba(79,124,255,0.18); --accent-strong:#76e4ff;
+      --border:#272b45; --border-soft:#151729;
+      --radius-lg:18px; --radius-md:12px;
+      --shadow-soft:0 26px 60px rgba(0,0,0,0.72);
     }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
       background:
         radial-gradient(circle at 0% -10%, #1b2b68 0, transparent 55%),
         radial-gradient(circle at 100% 0%, #321b68 0, transparent 55%),
         linear-gradient(180deg, #020313 0, #050817 55%, #020313 100%);
-      color: var(--fg);
-      -webkit-font-smoothing: antialiased;
+      color:var(--fg);
+      -webkit-font-smoothing:antialiased;
     }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .page { max-width: 1180px; margin: 0 auto; padding: 22px 18px 80px; }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .page{max-width:1180px;margin:0 auto;padding:22px 18px 80px}
 
-    header {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; margin-bottom: 26px;
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      gap:16px;margin-bottom:26px;
     }
-    .brand { display: flex; align-items: center; gap: 12px; }
-    .logo-orb {
-      width: 34px; height: 34px; border-radius: 999px;
-      background: conic-gradient(from 170deg, #4f7cff, #86e3ff, #c19bff, #4f7cff);
-      position: relative;
-      box-shadow: 0 0 0 2px #020313, 0 18px 32px rgba(0,0,0,0.65);
-      display: inline-flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 15px; color: #fff;
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo-orb{
+      width:34px;height:34px;border-radius:999px;
+      background:conic-gradient(from 170deg,#4f7cff,#86e3ff,#c19bff,#4f7cff);
+      position:relative;
+      box-shadow:0 0 0 2px #020313, 0 18px 32px rgba(0,0,0,0.65);
+      display:inline-flex;align-items:center;justify-content:center;
+      font-weight:700;font-size:15px;color:#fff;
     }
-    .logo-orb::after {
-      content: ""; position: absolute; inset: 3px; border-radius: inherit;
-      background: radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 55%);
-      mix-blend-mode: screen;
+    .logo-orb::after{
+      content:"";position:absolute;inset:3px;border-radius:inherit;
+      background:radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 55%);
+      mix-blend-mode:screen;
     }
-    .logo-orb span { position: relative; z-index: 1; letter-spacing: 0.05em; }
-    .logo-text-main { font-weight: 600; font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; }
-    .logo-text-sub { font-size: 11px; color: var(--fg-soft); }
+    .logo-orb span{position:relative;z-index:1;letter-spacing:0.05em}
+    .logo-text-main{font-weight:600;font-size:16px;letter-spacing:0.08em;text-transform:uppercase}
+    .logo-text-sub{font-size:11px;color:var(--fg-soft)}
 
-    nav {
-      display: flex; align-items: center; gap: 18px; font-size: 13px;
-      flex-wrap: wrap; justify-content: flex-end;
+    nav{
+      display:flex;align-items:center;gap:18px;font-size:13px;
+      flex-wrap:wrap;justify-content:flex-end;
     }
-    nav a { color: var(--fg-soft); text-decoration: none; }
-    nav a:hover { color: var(--fg); }
-    .nav-cta {
-      padding: 8px 16px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: radial-gradient(circle at 0 0, rgba(118,228,255,0.14), transparent 55%);
-      display: inline-flex; align-items: center; gap: 7px;
-      font-size: 12px; font-weight: 500; color: var(--fg);
+    nav a{color:var(--fg-soft);text-decoration:none}
+    nav a:hover{color:var(--fg)}
+    .nav-cta{
+      padding:8px 16px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:radial-gradient(circle at 0 0, rgba(118,228,255,0.14), transparent 55%);
+      display:inline-flex;align-items:center;gap:7px;
+      font-size:12px;font-weight:500;color:var(--fg);
     }
-    .nav-cta span.dot {
-      width: 7px; height: 7px; border-radius: 999px;
-      background: #2cf5aa; box-shadow: 0 0 0 4px rgba(44,245,170,0.2);
+    .nav-cta span.dot{
+      width:7px;height:7px;border-radius:999px;
+      background:#2cf5aa;box-shadow:0 0 0 4px rgba(44,245,170,0.2);
     }
-    @media (max-width: 860px) {
-      header { flex-direction: column; align-items: flex-start; }
-      nav { justify-content: flex-start; }
+    @media (max-width:860px){
+      header{flex-direction:column;align-items:flex-start}
+      nav{justify-content:flex-start}
     }
 
-    .hero {
-      border-radius: 22px;
-      border: 1px solid rgba(112,136,255,0.24);
+    .hero{
+      border-radius:22px;
+      border:1px solid rgba(112,136,255,0.24);
       background:
         radial-gradient(circle at 0 0, rgba(118,228,255,0.16), transparent 60%),
         radial-gradient(circle at 100% 0, rgba(83,124,255,0.18), transparent 65%),
         linear-gradient(145deg, #050821, #020313);
-      box-shadow: var(--shadow-soft);
-      padding: 18px 18px 16px;
-      margin-bottom: 22px;
+      box-shadow:var(--shadow-soft);
+      padding:18px 18px 16px;
+      margin-bottom:22px;
     }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 4px 11px; border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(2,3,19,0.8);
-      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
-      color: var(--fg-soft);
-      margin-bottom: 10px;
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:4px 11px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(2,3,19,0.8);
+      font-size:11px;letter-spacing:0.12em;text-transform:uppercase;
+      color:var(--fg-soft);
+      margin-bottom:10px;
     }
-    h1 { margin: 0 0 10px; font-size: clamp(26px, 3.4vw, 34px); line-height: 1.12; }
-    .lead { margin: 0; color: var(--fg-soft); font-size: 13px; line-height: 1.6; max-width: 880px; }
+    h1{margin:0 0 10px;font-size:clamp(26px,3.4vw,34px);line-height:1.12}
+    .lead{margin:0;color:var(--fg-soft);font-size:13px;line-height:1.6;max-width:920px}
 
-    .layout {
-      display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 0.55fr);
-      gap: 18px; align-items: start;
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0,0.95fr) minmax(0,0.55fr);
+      gap:18px;
+      align-items:start;
     }
-    @media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+    @media (max-width:980px){.layout{grid-template-columns:1fr}}
 
-    .card {
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(4,7,28,0.96);
-      padding: 14px 15px 16px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+    .card{
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(255,255,255,0.06);
+      background:rgba(4,7,28,0.96);
+      padding:14px 15px 16px;
+      box-shadow:0 16px 40px rgba(0,0,0,0.6);
     }
-    .card h2 { margin: 0 0 10px; font-size: 16px; }
-    .card h3 { margin: 14px 0 8px; font-size: 13px; }
-    .card p { margin: 0 0 10px; color: var(--fg-soft); font-size: 12px; line-height: 1.65; }
-    .card p:last-child { margin-bottom: 0; }
-    .row { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .card h2{margin:0 0 10px;font-size:16px}
+    .card p{margin:0 0 10px;color:var(--fg-soft);font-size:12px;line-height:1.65}
+    .card p:last-child{margin-bottom:0}
 
-    .toc {
-      position: sticky; top: 16px;
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255,255,255,0.06);
-      background: rgba(4,7,28,0.96);
-      padding: 12px 12px 12px;
-    }
-    .toc-title {
-      font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
-      color: var(--fg-soft); margin-bottom: 10px;
-    }
-    .toc a {
-      display: block; padding: 7px 10px; border-radius: 10px;
-      color: var(--fg-soft); font-size: 12px; text-decoration: none;
-    }
-    .toc a:hover { background: rgba(255,255,255,0.06); color: var(--fg); }
+    .kicker{font-size:11px;text-transform:uppercase;letter-spacing:0.16em;color:var(--fg-soft);margin-bottom:6px}
+    section{scroll-margin-top:16px}
 
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      background: #050814;
-      border-radius: var(--radius-md);
-      border: 1px solid #222845;
-      padding: 10px 11px;
-      overflow-x: auto;
-      white-space: pre;
-      line-height: 1.5;
-      color: #dde3ff;
+    .mono{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:11px;
+      background:#050814;
+      border-radius:var(--radius-md);
+      border:1px solid #222845;
+      padding:10px 11px;
+      overflow-x:auto;
+      white-space:pre;
+      line-height:1.5;
+      color:#dde3ff;
     }
+    .mono code{color:inherit}
 
-    .table-wrap {
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
-      background: rgba(5,8,30,0.97);
-      margin-top: 10px;
+    .table-wrap{
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(255,255,255,0.06);
+      overflow:hidden;
+      background:rgba(5,8,30,0.97);
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
     }
-    th, td {
-      padding: 7px 10px;
-      text-align: left;
-      border-bottom: 1px solid rgba(32,36,66,0.9);
-      vertical-align: top;
+    th,td{
+      padding:8px 10px;
+      text-align:left;
+      border-bottom:1px solid rgba(32,36,66,0.9);
+      vertical-align:top;
     }
-    th {
-      font-size: 11px;
-      color: var(--fg-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      background: rgba(10,13,40,0.85);
+    th{
+      font-size:11px;
+      color:var(--fg-soft);
+      text-transform:uppercase;
+      letter-spacing:0.12em;
+      background:rgba(10,13,40,0.85);
     }
-    tr:last-child td { border-bottom: none; }
-    code { font-size: 0.95em; }
+    tr:last-child td{border-bottom:none}
 
-    section { scroll-margin-top: 16px; }
-    .kicker { font-size: 11px; text-transform: uppercase; letter-spacing: 0.16em; color: var(--fg-soft); margin-bottom: 6px; }
-
-    footer {
-      margin-top: 44px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(27,31,60,0.95);
-      font-size: 11px;
-      color: var(--fg-soft);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
-      align-items: center;
+    .toc{
+      position:sticky;top:16px;
+      border-radius:var(--radius-lg);
+      border:1px solid rgba(255,255,255,0.06);
+      background:rgba(4,7,28,0.96);
+      padding:12px;
     }
-    footer nav { display: flex; gap: 12px; flex-wrap: wrap; }
-    footer a { color: var(--fg-soft); }
-    footer a:hover { color: var(--fg); }
+    .toc-title{
+      font-size:11px;text-transform:uppercase;letter-spacing:0.14em;
+      color:var(--fg-soft);margin-bottom:10px;
+    }
+    .toc a{
+      display:block;
+      padding:7px 10px;
+      border-radius:10px;
+      color:var(--fg-soft);
+      font-size:12px;
+      text-decoration:none;
+    }
+    .toc a:hover{background:rgba(255,255,255,0.06);color:var(--fg)}
+    .toc small{display:block;color:var(--fg-softer);padding:0 10px;margin-top:10px;line-height:1.5}
+
+    .btn-mini{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:7px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.12);
+      background:rgba(2,4,19,0.9);
+      color:var(--fg);
+      font-size:12px;
+      cursor:pointer;
+      text-decoration:none;
+    }
+    .btn-mini:hover{background:rgba(255,255,255,0.06);text-decoration:none}
+    .btn-mini:active{transform:translateY(1px)}
+    .actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+
+    footer{
+      margin-top:44px;
+      padding-top:18px;
+      border-top:1px solid rgba(27,31,60,0.95);
+      font-size:11px;
+      color:var(--fg-soft);
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      justify-content:space-between;
+      align-items:center;
+    }
+    footer nav{display:flex;gap:12px;flex-wrap:wrap}
+    footer a{color:var(--fg-soft)}
+    footer a:hover{color:var(--fg)}
   </style>
 </head>
 <body>
   <div class="page">
     <header>
       <div class="brand">
-        <div class="logo-orb"><span>A2J</span></div>
-        <div>
-          <div class="logo-text-main">A2J · AI2JSON</div>
-          <div class="logo-text-sub">Spec · webpage.ai.v0.1</div>
-        </div>
+        <a href="./index.html" class="brand" style="gap:12px;">
+          <div class="logo-orb"><span>A2J</span></div>
+          <div>
+            <div class="logo-text-main">A2J · AI2JSON</div>
+            <div class="logo-text-sub">Spec · webpage.ai.v0.1</div>
+          </div>
+        </a>
       </div>
       <nav>
         <a href="./index.html#how">How it works</a>
         <a href="./spec.html">webpage.ai</a>
         <a href="./index.html#pricing">Pricing</a>
         <a href="./docs.html">API</a>
+        <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a class="nav-cta" href="./index.html#docs"><span class="dot"></span> Get access</a>
       </nav>
     </header>
 
     <div class="hero">
-      <div class="eyebrow">webpage.ai.v0.1 · Stable JSON Contract</div>
-      <h1>Specification: <code>webpage.ai.v0.1</code></h1>
+      <div class="eyebrow">Specification · Public Beta</div>
+      <h1><code>webpage.ai.v0.1</code> — JSON contract</h1>
       <p class="lead">
-        This document defines the JSON contract returned by A2J when transforming a public webpage.
-        The goal is a predictable schema that AI systems can consume reliably: structured sections, minimal metadata, and a content hash that fingerprints what was read.
+        This spec defines the stable JSON document returned by A2J. Goal: turn messy public webpages into predictable,
+        AI-ready content for agents, tools and RAG pipelines. One URL in, one JSON contract out.
       </p>
+      <div class="actions" aria-label="Quick actions">
+        <button class="btn-mini" type="button" data-copy="#snippet-min">Copy minimal example</button>
+        <button class="btn-mini" type="button" data-copy="#snippet-schema">Copy JSON schema (overview)</button>
+      </div>
     </div>
 
     <div class="layout">
-      <div class="row">
+      <div style="display:grid; gap:12px;">
         <section id="overview" class="card">
           <div class="kicker">Overview</div>
-          <h2>Design goals</h2>
-          <p><strong>webpage.ai.v0.1</strong> is intentionally minimal and stable.</p>
-          <div class="mono">Goals
-- One URL in → one JSON document out
-- Stable structure for agents and RAG
-- Extracted, cleaned main content (not full DOM)
-- Sections[] preserve reading order and headings
-- content_hash fingerprints extracted text
-- Stateless: no storage is required by the spec</div>
-        </section>
-
-        <section id="shape" class="card">
-          <div class="kicker">Schema</div>
-          <h2>Top-level JSON shape</h2>
-          <p>Required fields are mandatory for compliance with v0.1.</p>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Field</th>
-                  <th>Type</th>
-                  <th>Required</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>spec</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Must be <code>"webpage.ai.v0.1"</code>.</td>
-                </tr>
-                <tr>
-                  <td><code>url</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Requested URL provided by the client.</td>
-                </tr>
-                <tr>
-                  <td><code>canonical_url</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Canonical URL if detected, otherwise equals <code>url</code>.</td>
-                </tr>
-                <tr>
-                  <td><code>last_fetched</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>UTC timestamp in ISO 8601 format.</td>
-                </tr>
-                <tr>
-                  <td><code>language</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Best-effort BCP-47-like tag (e.g. <code>en</code>, <code>fr</code>).</td>
-                </tr>
-                <tr>
-                  <td><code>content_hash</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Hash of the extracted text: <code>sha256:&lt;hex&gt;</code>.</td>
-                </tr>
-                <tr>
-                  <td><code>title</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Best-effort main title.</td>
-                </tr>
-                <tr>
-                  <td><code>summary</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Short factual summary of the extracted content.</td>
-                </tr>
-                <tr>
-                  <td><code>type</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td><code>article</code> | <code>homepage</code> | <code>unknown</code>.</td>
-                </tr>
-                <tr>
-                  <td><code>sections</code></td>
-                  <td>array</td>
-                  <td>Yes</td>
-                  <td>Ordered content blocks (see below).</td>
-                </tr>
-                <tr>
-                  <td><code>links</code></td>
-                  <td>array</td>
-                  <td>No</td>
-                  <td>Optional extracted links (implementation-defined).</td>
-                </tr>
-                <tr>
-                  <td><code>meta</code></td>
-                  <td>object</td>
-                  <td>No</td>
-                  <td>Optional best-effort metadata (site, author, dates, tags...).</td>
-                </tr>
-                <tr>
-                  <td><code>proof</code></td>
-                  <td>object</td>
-                  <td>No</td>
-                  <td>Reserved for future integrity proofs.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section id="sections" class="card">
-          <div class="kicker">Sections</div>
-          <h2><code>sections[]</code> format</h2>
-          <p>Each section represents a contiguous block of content under a heading.</p>
-          <div class="mono">Section object (v0.1)
-{
-  "heading": "Introduction",
-  "level": 1,
-  "id": "introduction",
-  "text": "Clean extracted text..."
-}</div>
-
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Field</th>
-                  <th>Type</th>
-                  <th>Required</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>heading</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Best-effort heading label for this block.</td>
-                </tr>
-                <tr>
-                  <td><code>level</code></td>
-                  <td>number</td>
-                  <td>Yes</td>
-                  <td>Heading depth (1 for H1-like, 2 for H2-like, etc.).</td>
-                </tr>
-                <tr>
-                  <td><code>id</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Stable identifier derived from the heading (slug).</td>
-                </tr>
-                <tr>
-                  <td><code>text</code></td>
-                  <td>string</td>
-                  <td>Yes</td>
-                  <td>Clean text content for that section.</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </section>
-
-        <section id="hashing" class="card">
-          <div class="kicker">Hashing</div>
-          <h2><code>content_hash</code> rules</h2>
+          <h2>Document shape</h2>
           <p>
-            In v0.1, <code>content_hash</code> is computed over the extracted text only (not raw HTML), after normalization.
-            Implementations may differ in extraction heuristics, but should keep hashing deterministic within the same implementation.
+            The response MUST be a single JSON object, with a <code>spec</code> field set to <code>"webpage.ai.v0.1"</code>.
+            The extracted content is stored in ordered <code>sections[]</code>. A SHA-256 fingerprint is stored in <code>content_hash</code>.
           </p>
-          <div class="mono">Format
-content_hash = "sha256:" + HEX(SHA-256(extracted_text_normalized_utf8))
-
-Notes
-- UTF-8 encoding
-- extracted_text should be the concatenation of section texts in order
-- normalization should be consistent (whitespace normalized)</div>
-        </section>
-
-        <section id="example" class="card">
-          <div class="kicker">Example</div>
-          <h2>Full example document</h2>
-          <div class="mono">{
+          <div class="mono" id="snippet-min">{
   "spec": "webpage.ai.v0.1",
   "url": "https://example.com/article",
   "canonical_url": "https://example.com/article",
@@ -427,36 +269,247 @@ Notes
   "summary": "Short factual summary...",
   "type": "article",
   "sections": [
-    { "heading": "Intro", "level": 1, "id": "intro", "text": "..." },
-    { "heading": "Details", "level": 2, "id": "details", "text": "..." }
+    { "heading": "Intro", "level": 1, "id": "intro", "text": "..." }
   ],
   "links": [],
   "meta": {},
   "proof": {}
 }</div>
         </section>
+
+        <section id="fields" class="card">
+          <div class="kicker">Fields</div>
+          <h2>Required and optional fields</h2>
+          <p>
+            Required: <code>spec</code>, <code>url</code>, <code>last_fetched</code>, <code>language</code>, <code>content_hash</code>,
+            <code>title</code>, <code>type</code>, <code>sections</code>. Optional: <code>canonical_url</code>, <code>summary</code>, <code>links</code>, <code>meta</code>, <code>proof</code>.
+          </p>
+
+          <div class="table-wrap" role="region" aria-label="Fields table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>spec</code></td>
+                  <td>string</td>
+                  <td>MUST be <code>"webpage.ai.v0.1"</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>url</code></td>
+                  <td>string</td>
+                  <td>Requested URL (public http/https).</td>
+                </tr>
+                <tr>
+                  <td><code>canonical_url</code></td>
+                  <td>string</td>
+                  <td>Best-effort canonical URL if detected, else omitted or equals <code>url</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>last_fetched</code></td>
+                  <td>string</td>
+                  <td>MUST be ISO 8601 UTC (e.g. <code>2025-01-02T10:11:12Z</code>).</td>
+                </tr>
+                <tr>
+                  <td><code>language</code></td>
+                  <td>string</td>
+                  <td>BCP-47-ish short code (e.g. <code>en</code>, <code>fr</code>). Best-effort.</td>
+                </tr>
+                <tr>
+                  <td><code>content_hash</code></td>
+                  <td>string</td>
+                  <td>MUST be <code>sha256:&lt;hex&gt;</code> computed over extracted readable text (see hashing rules).</td>
+                </tr>
+                <tr>
+                  <td><code>title</code></td>
+                  <td>string</td>
+                  <td>Best-effort main title for the content.</td>
+                </tr>
+                <tr>
+                  <td><code>summary</code></td>
+                  <td>string</td>
+                  <td>Optional short factual summary (v0.1).</td>
+                </tr>
+                <tr>
+                  <td><code>type</code></td>
+                  <td>string</td>
+                  <td>One of: <code>article</code>, <code>homepage</code>, <code>unknown</code>.</td>
+                </tr>
+                <tr>
+                  <td><code>sections</code></td>
+                  <td>array</td>
+                  <td>Ordered blocks (see <code>Section</code> object).</td>
+                </tr>
+                <tr>
+                  <td><code>links</code></td>
+                  <td>array</td>
+                  <td>Optional extracted links (see <code>Link</code> object). May be empty array.</td>
+                </tr>
+                <tr>
+                  <td><code>meta</code></td>
+                  <td>object</td>
+                  <td>Optional metadata (author, published/updated dates, site name, tags...). Best-effort.</td>
+                </tr>
+                <tr>
+                  <td><code>proof</code></td>
+                  <td>object</td>
+                  <td>Reserved for future integrity proofs (empty object in v0.1 is OK).</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="objects" class="card">
+          <div class="kicker">Objects</div>
+          <h2>Section and Link objects</h2>
+
+          <p><strong>Section</strong> (required fields):</p>
+          <div class="mono">{
+  "heading": "Introduction",
+  "level": 1,
+  "id": "introduction",
+  "text": "Clean extracted text..."
+}</div>
+
+          <p style="margin-top:10px;"><strong>Rules</strong>:</p>
+          <div class="mono">- heading: string (can be empty if unknown, but prefer a real heading)
+- level: integer (1..6) derived from HTML heading level (best-effort)
+- id: stable slug derived from heading (lowercase, hyphenated); ensure uniqueness
+- text: clean human-readable content for that section (no scripts/nav/ads)</div>
+
+          <p style="margin-top:10px;"><strong>Link</strong> (optional):</p>
+          <div class="mono">{
+  "text": "Example link text",
+  "url": "https://example.com/target"
+}</div>
+          <p>Links are optional; keep it minimal in v0.1.</p>
+        </section>
+
+        <section id="hashing" class="card">
+          <div class="kicker">Hashing</div>
+          <h2>How <code>content_hash</code> is computed</h2>
+          <p>
+            <code>content_hash</code> MUST be a SHA-256 computed over the extracted readable text (not raw HTML).
+            The exact internal normalization can evolve, but the goal is stable “meaningful change detection”.
+          </p>
+          <div class="mono">Recommended normalization (v0.1):
+1) Extract readable text (reader-mode style) from the page.
+2) Convert CRLF → LF.
+3) Trim trailing spaces on each line.
+4) Collapse runs of blank lines to a maximum of 2.
+5) Concatenate as the canonical text buffer.
+6) sha256(buffer) → hex; content_hash = "sha256:" + hex</div>
+          <p>
+            If extraction fails, return <code>type: "unknown"</code>, still provide <code>sections[]</code> with one fallback section,
+            and compute the hash on the fallback extracted text.
+          </p>
+        </section>
+
+        <section id="policy" class="card">
+          <div class="kicker">Policy</div>
+          <h2>Safety and access rules (v0.1)</h2>
+          <p>
+            A2J SHOULD block non-public targets (private IPs, localhost, internal networks) and return <code>403</code>.
+            Clients can use <code>content_hash</code> + <code>last_fetched</code> for monitoring and caching decisions.
+          </p>
+          <div class="mono">Typical errors:
+- 400 invalid_url
+- 401 unauthorized
+- 403 blocked_target
+- 429 rate_limited
+- 5xx upstream_error</div>
+        </section>
+
+        <section id="schema" class="card">
+          <div class="kicker">Schema overview</div>
+          <h2>JSON Schema (human-readable)</h2>
+          <p>This is an overview (not a strict JSON Schema file) to keep v0.1 simple.</p>
+          <div class="mono" id="snippet-schema">Document {
+  spec: "webpage.ai.v0.1"
+  url: string
+  canonical_url?: string
+  last_fetched: string (ISO 8601 UTC)
+  language: string
+  content_hash: "sha256:" + hex
+  title: string
+  summary?: string
+  type: "article" | "homepage" | "unknown"
+  sections: Section[]
+  links?: Link[]
+  meta?: object
+  proof?: object
+}
+
+Section { heading: string, level: number, id: string, text: string }
+Link { text: string, url: string }</div>
+        </section>
       </div>
 
       <aside class="toc">
         <div class="toc-title">On this page</div>
         <a href="#overview">Overview</a>
-        <a href="#shape">Schema</a>
-        <a href="#sections">Sections</a>
+        <a href="#fields">Fields</a>
+        <a href="#objects">Objects</a>
         <a href="#hashing">Hashing</a>
-        <a href="#example">Example</a>
+        <a href="#policy">Policy</a>
+        <a href="#schema">Schema</a>
+        <small>Next: <a href="./docs.html">API Docs</a> · <a href="./index.html">Home</a></small>
       </aside>
     </div>
 
     <footer>
-      <span>© A2J · AI2JSON. webpage.ai.v0.1 Spec.</span>
+      <span>© A2J · AI2JSON. Spec webpage.ai.v0.1.</span>
       <nav>
         <a href="./index.html">Home</a>
         <a href="./docs.html">Docs</a>
         <a href="./spec.html">Spec</a>
-        <a href="#">GitHub</a>
+        <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./terms.html">Terms</a>
         <a href="mailto:contact@ai2json.com">Contact</a>
       </nav>
     </footer>
   </div>
+
+  <script>
+    (function () {
+      function copyText(text) {
+        if (!text) return;
+        if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(text);
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta);
+      }
+
+      function defaultLabel(sel) {
+        if (sel === "#snippet-min") return "Copy minimal example";
+        if (sel === "#snippet-schema") return "Copy JSON schema (overview)";
+        return "Copy";
+      }
+
+      document.addEventListener("click", function (e) {
+        const btn = e.target.closest("[data-copy]");
+        if (!btn) return;
+        const sel = btn.getAttribute("data-copy");
+        const el = sel ? document.querySelector(sel) : null;
+        const text = el ? (el.innerText || el.textContent || "").trim() : "";
+        copyText(text);
+        btn.textContent = "Copied";
+        setTimeout(() => { btn.textContent = defaultLabel(sel); }, 900);
+      });
+    })();
+  </script>
 </body>
-                                 </html>
+</html>
