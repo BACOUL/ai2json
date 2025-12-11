@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>AI2JSON — Turn Any Webpage Into Clean AI-Ready JSON</title>
+  <meta name="description" content="AI2JSON turns any public webpage into clean, structured JSON designed for AI agents, LLMs and RAG pipelines, following the webpage.ai.v0.1 specification.">
+  <style>
+    :root {
+      color-scheme: dark light;
+      --bg: #050816;
+      --bg-soft: #070b18;
+      --fg: #f5f5f7;
+      --fg-soft: #a0a4b8;
+      --accent: #4f7cff;
+      --accent-soft: rgba(79,124,255,0.16);
+      --border: #262a3f;
+      --border-soft: #181b2b;
+      --radius: 16px;
+      --shadow-soft: 0 18px 40px rgba(0,0,0,0.5);
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: radial-gradient(circle at top, #151a33 0, #050816 50%);
+      color: var(--fg);
+    }
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    .page {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 20px 16px 72px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      background: conic-gradient(from 150deg, #4f7cff, #5bd0ff, #9f6bff, #4f7cff);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      box-shadow: 0 0 0 2px #050816;
+    }
+    .logo-text {
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      font-size: 15px;
+    }
+    .logo-sub {
+      display: block;
+      font-size: 11px;
+      color: var(--fg-soft);
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 13px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    nav a {
+      color: var(--fg-soft);
+      text-decoration: none;
+    }
+    nav a:hover {
+      color: var(--fg);
+      text-decoration: none;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 16px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn.outline {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--fg);
+    }
+
+    @media (max-width: 860px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      nav {
+        justify-content: flex-start;
+      }
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 1.1fr);
+      gap: 32px;
+      align-items: flex-start;
+    }
+    @media (max-width: 880px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.35);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--fg-soft);
+      margin-bottom: 14px;
+    }
+    .eyebrow span.badge {
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      letter-spacing: 0;
+      text-transform: none;
+      color: #dbe5ff;
+      font-weight: 500;
+    }
+    h1 {
+      margin: 0 0 14px;
+      font-size: clamp(32px, 4.8vw, 44px);
+      line-height: 1.08;
+    }
+    .lead {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--fg-soft);
+      max-width: 540px;
+      margin-bottom: 18px;
+    }
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(7,11,24,0.9);
+      font-size: 11px;
+      color: var(--fg-soft);
+    }
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .hero-note {
+      font-size: 11px;
+      color: var(--fg-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-note span {
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+
+    .card {
+      border-radius: var(--radius);
+      border: 1px solid var(--border-soft);
+      background: rgba(8,11,28,0.96);
+      padding: 14px 14px 16px;
+      box-shadow: var(--shadow-soft);
+      font-size: 13px;
+    }
+    .card-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--fg-soft);
+      margin-bottom: 8px;
+    }
+    .code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 11px;
+      color: var(--fg-soft);
+    }
+    .dots {
+      display: inline-flex;
+      gap: 4px;
+    }
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #ff5f57;
+    }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:nth-child(3) { background: #28c840; }
+    .code-pill {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+    }
+    .code-block {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: #050814;
+      border-radius: 10px;
+      border: 1px solid #20253a;
+      padding: 10px 11px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+    .hint {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--fg-soft);
+    }
+
+    section {
+      margin-top: 42px;
+    }
+    h2.section-title {
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+    .section-sub {
+      font-size: 13px;
+      color: var(--fg-soft);
+      max-width: 640px;
+      margin-bottom: 18px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(220px,1fr));
+      gap: 14px;
+    }
+    .feature {
+      border-radius: var(--radius);
+      border: 1px solid var(--border-soft);
+      padding: 12px 12px 13px;
+      background: rgba(8,11,28,0.9);
+      font-size: 13px;
+    }
+    .feature h3 {
+      margin: 0 0 6px;
+      font-size: 13px;
+    }
+    .feature p {
+      margin: 0;
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--fg-soft);
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .tag {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      color: var(--fg-soft);
+      background: rgba(0,0,0,0.25);
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 8px;
+    }
+    .table th,
+    .table td {
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .table th {
+      font-weight: 500;
+      color: var(--fg-soft);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .table code {
+      font-size: 11px;
+    }
+    .table-wrap {
+      border-radius: 12px;
+      border: 1px solid var(--border-soft);
+      overflow: hidden;
+      background: rgba(7,10,23,0.95);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+      gap: 14px;
+    }
+    .pricing-card {
+      border-radius: var(--radius);
+      border: 1px solid var(--border-soft);
+      background: rgba(8,11,28,0.96);
+      padding: 14px 14px 16px;
+      font-size: 13px;
+    }
+    .pricing-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .pricing-note {
+      font-size: 11px;
+      color: var(--fg-soft);
+      margin-bottom: 8px;
+    }
+    .pricing-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 12px;
+      color: var(--fg-soft);
+    }
+    .pricing-list li {
+      margin-bottom: 4px;
+    }
+
+    .mono-block {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 11px;
+      background: #050814;
+      border-radius: 10px;
+      border: 1px solid #20253a;
+      padding: 10px 11px;
+      overflow-x: auto;
+      white-space: pre;
+      line-height: 1.5;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border-soft);
+      font-size: 11px;
+      color: var(--fg-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer nav {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    footer a {
+      color: var(--fg-soft);
+    }
+    footer a:hover {
+      color: var(--fg);
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="logo-mark">A2</div>
+        <div>
+          <div class="logo-text">AI2JSON</div>
+          <span class="logo-sub">Clean JSON from any webpage. Ready for AI.</span>
+        </div>
+      </div>
+      <nav>
+        <a href="#how">How it works</a>
+        <a href="#spec">webpage.ai</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#docs">Docs</a>
+        <a class="btn outline" href="#docs">Get started</a>
+      </nav>
+    </header>
+
+    <main>
+      <div>
+        <div class="eyebrow">
+          <span>Public Beta</span>
+          <span class="badge">Web → JSON for AI</span>
+        </div>
+        <h1>Turn any public webpage into clean AI-ready JSON.</h1>
+        <p class="lead">
+          AI2JSON fetches a URL, extracts the main content, cleans it, structures it into sections, adds metadata and a content hash, and returns a single, predictable JSON document following the <strong>webpage.ai.v0.1</strong> spec.
+        </p>
+        <div class="pill-row">
+          <div class="pill">No HTML parsing</div>
+          <div class="pill">Sections &amp; headings</div>
+          <div class="pill">Language &amp; metadata</div>
+          <div class="pill">Factual summary (v0.1)</div>
+          <div class="pill">SHA-256 content hash</div>
+        </div>
+        <div class="cta-row">
+          <a href="#docs" class="btn">View API docs</a>
+          <a href="#spec" class="btn outline">See JSON format</a>
+        </div>
+        <div class="hero-note">
+          <span>Spec: <strong>webpage.ai.v0.1</strong></span>
+          <span>Designed for LLMs, agents and RAG pipelines.</span>
+        </div>
+      </div>
+
+      <aside class="card" id="example">
+        <div class="card-title">Example request</div>
+        <div class="code-header">
+          <div class="dots">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+          <span class="code-pill">curl · JSON</span>
+        </div>
+        <div class="code-block">
+curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Accept: application/json"
+        </div>
+
+        <div class="card-title" style="margin-top:12px;">Excerpt of response (webpage.ai.v0.1)</div>
+        <div class="code-block">
+{
+  "spec": "webpage.ai.v0.1",
+  "url": "https://example.com/article-ai",
+  "canonical_url": "https://example.com/article-ai",
+  "last_fetched": "2025-01-02T10:11:12Z",
+  "language": "en",
+  "content_hash": "sha256:abc123...",
+  "title": "How AI regulation is changing",
+  "summary": "Short factual summary of the page content...",
+  "type": "article",
+  "sections": [
+    {
+      "heading": "Introduction",
+      "level": 1,
+      "id": "introduction",
+      "text": "Clean extracted text for the introduction section..."
+    }
+  ],
+  "links": [],
+  "meta": {},
+  "proof": {}
+}
+        </div>
+        <p class="hint">
+          Feed this JSON directly into your LLM prompts, agents, or RAG pipelines — no custom scraping, no brittle HTML logic.
+        </p>
+      </aside>
+    </main>
+
+    <section id="how">
+      <h2 class="section-title">How AI2JSON works</h2>
+      <p class="section-sub">
+        AI2JSON acts as a thin, stateless bridge between the messy HTML of the public web and a stable JSON contract designed specifically for AI workloads.
+      </p>
+      <div class="grid">
+        <div class="feature">
+          <h3>1. Fetch &amp; detect</h3>
+          <p>AI2JSON fetches the target URL, follows redirects when necessary and detects the main content area using a reader-style heuristic.</p>
+        </div>
+        <div class="feature">
+          <h3>2. Clean &amp; normalize</h3>
+          <p>Navigation, ads, scripts and layout noise are removed. The remaining text is normalized to a consistent structure with predictable spacing.</p>
+        </div>
+        <div class="feature">
+          <h3>3. Structure into sections</h3>
+          <p>Headings and paragraphs are grouped into <code>sections[]</code>, each with a heading, level, id and clean text field that LLMs can consume directly.</p>
+        </div>
+        <div class="feature">
+          <h3>4. Summarize &amp; fingerprint</h3>
+          <p>A short factual summary is generated and a SHA-256 hash is computed over the extracted text, giving you a stable fingerprint of what was read.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="spec">
+      <h2 class="section-title">The <code>webpage.ai.v0.1</code> JSON format</h2>
+      <p class="section-sub">
+        AI2JSON returns a single JSON document per page, using a compact, versioned spec. The contract is designed to stay stable across implementations and upgrades.
+      </p>
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+          <tr>
+            <th>Field</th>
+            <th>Type</th>
+            <th>Purpose</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td><code>spec</code></td>
+            <td>string</td>
+            <td>Always <code>"webpage.ai.v0.1"</code> for this version.</td>
+          </tr>
+          <tr>
+            <td><code>url</code></td>
+            <td>string</td>
+            <td>URL requested by the client.</td>
+          </tr>
+          <tr>
+            <td><code>canonical_url</code></td>
+            <td>string</td>
+            <td>Canonical URL if detected, otherwise mirrors <code>url</code>.</td>
+          </tr>
+          <tr>
+            <td><code>last_fetched</code></td>
+            <td>string</td>
+            <td>ISO 8601 UTC timestamp of the snapshot.</td>
+          </tr>
+          <tr>
+            <td><code>language</code></td>
+            <td>string</td>
+            <td>Best-guess language code, e.g. <code>"en"</code> or <code>"fr"</code>.</td>
+          </tr>
+          <tr>
+            <td><code>content_hash</code></td>
+            <td>string</td>
+            <td>SHA-256 of extracted text, prefixed with <code>sha256:</code>.</td>
+          </tr>
+          <tr>
+            <td><code>title</code></td>
+            <td>string</td>
+            <td>Main page title.</td>
+          </tr>
+          <tr>
+            <td><code>summary</code></td>
+            <td>string</td>
+            <td>Short factual summary of the content.</td>
+          </tr>
+          <tr>
+            <td><code>type</code></td>
+            <td>string</td>
+            <td>One of <code>"article"</code>, <code>"homepage"</code>, or <code>"unknown"</code>.</td>
+          </tr>
+          <tr>
+            <td><code>sections[]</code></td>
+            <td>array</td>
+            <td>Ordered blocks with <code>heading</code>, <code>level</code>, <code>id</code>, <code>text</code>.</td>
+          </tr>
+          <tr>
+            <td><code>links[]</code></td>
+            <td>array</td>
+            <td>Optional extracted links for navigation or reference.</td>
+          </tr>
+          <tr>
+            <td><code>meta</code></td>
+            <td>object</td>
+            <td>Best-effort metadata like site name, author, dates, tags.</td>
+          </tr>
+          <tr>
+            <td><code>proof</code></td>
+            <td>object</td>
+            <td>Reserved for future content integrity proofs.</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="section-sub" style="margin-top:10px;">
+        The formal specification lives in <code>spec/webpage-ai-v0.1.md</code> in the repository and is kept stable across the whole v0.1 lifecycle.
+      </p>
+    </section>
+
+    <section id="use-cases">
+      <h2 class="section-title">Built for AI agents, LLMs and RAG pipelines</h2>
+      <p class="section-sub">
+        AI2JSON is designed for teams who want to give models a consistent view of the web, without maintaining their own scraping stack.
+      </p>
+      <div class="grid">
+        <div class="feature">
+          <h3>Agents that read the web</h3>
+          <p>Let your agents consume structured sections instead of raw HTML, with stable IDs and a consistent schema.</p>
+          <div class="tag-row">
+            <span class="tag">LLM agents</span>
+            <span class="tag">Tool calls</span>
+            <span class="tag">Workflows</span>
+          </div>
+        </div>
+        <div class="feature">
+          <h3>RAG &amp; knowledge pipelines</h3>
+          <p>Pre-clean content before embedding, chunking or indexing. Use the <code>content_hash</code> as a stable key.</p>
+          <div class="tag-row">
+            <span class="tag">RAG</span>
+            <span class="tag">Vector stores</span>
+            <span class="tag">ETL</span>
+          </div>
+        </div>
+        <div class="feature">
+          <h3>Monitoring &amp; compliance</h3>
+          <p>Monitor specific pages for changes in the underlying content and use hashes to detect when something actually changed.</p>
+          <div class="tag-row">
+            <span class="tag">Regulations</span>
+            <span class="tag">Docs</span>
+            <span class="tag">Change detection</span>
+          </div>
+        </div>
+        <div class="feature">
+          <h3>Developer tools &amp; crawlers</h3>
+          <p>Replace ad-hoc scrapers with a single, documented API. Keep your application logic focused on what the model needs.</p>
+          <div class="tag-row">
+            <span class="tag">SDKs</span>
+            <span class="tag">Dev tools</span>
+            <span class="tag">Automation</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="pricing">
+      <h2 class="section-title">Early access and pricing</h2>
+      <p class="section-sub">
+        AI2JSON starts with a simple, developer-friendly model: a small free tier for experiments, predictable paid tiers for projects and teams, and custom plans for companies that need higher volume and SLAs.
+      </p>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-name">Free · Developer sandbox</div>
+          <div class="pricing-note">For trying the API and small experiments.</div>
+          <ul class="pricing-list">
+            <li>Limited requests per month</li>
+            <li>Single API key</li>
+            <li>Access to <code>/v1/transform</code></li>
+            <li>Same JSON format as paid tiers</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Pro · Projects &amp; teams</div>
+          <div class="pricing-note">For production workloads and internal tools.</div>
+          <ul class="pricing-list">
+            <li>Higher request quotas</li>
+            <li>Multiple API keys</li>
+            <li>Priority support for issues</li>
+            <li>Roadmap features as they ship</li>
+          </ul>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Enterprise · Custom</div>
+          <div class="pricing-note">For companies and high-volume agents.</div>
+          <ul class="pricing-list">
+            <li>Custom limits and SLAs</li>
+            <li>Dedicated endpoints and IPs</li>
+            <li>Advanced monitoring and reporting</li>
+            <li>Optional on-prem or private deployment</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="docs">
+      <h2 class="section-title">API in one glance</h2>
+      <p class="section-sub">
+        AI2JSON v0.1 exposes a single, stateless endpoint. You send a URL and an API key, you receive a <code>webpage.ai.v0.1</code> document.
+      </p>
+      <div class="mono-block">
+Base URL (example)
+  https://api.ai2json.com
+
+Endpoint
+  GET /v1/transform?url=&lt;ENCODED_URL&gt;
+
+Headers
+  Authorization: Bearer YOUR_API_KEY
+  Accept: application/json
+
+Query parameters
+  url       Required. Public page URL to transform.
+  lang      Optional. Preferred language for future advanced summaries.
+  no_cache  Optional. If true, forces a fresh fetch.
+
+Behaviour
+  200 OK    Body is a webpage.ai.v0.1 JSON document.
+  4xx       Client errors (missing url, invalid url, auth, etc.).
+  5xx       Upstream or internal errors, with JSON error payload.
+      </div>
+      <p class="section-sub" style="margin-top:10px;">
+        A more detailed documentation (including error codes and edge cases) lives in the repository and will evolve as the API grows from v0.1 to v1.0.
+      </p>
+    </section>
+
+    <section id="roadmap">
+      <h2 class="section-title">Roadmap</h2>
+      <p class="section-sub">
+        AI2JSON starts small on purpose. The goal is to keep the core contract stable while adding capabilities that matter for real AI workloads.
+      </p>
+      <div class="grid">
+        <div class="feature">
+          <h3>v0.1 · HTML → JSON</h3>
+          <p>Single endpoint, <code>webpage.ai.v0.1</code> spec, basic extraction and summary, single API key flow for early users.</p>
+        </div>
+        <div class="feature">
+          <h3>v0.2 · Smarter summaries</h3>
+          <p>LLM-powered summaries with explicit language control, improved metadata, better handling of long technical pages.</p>
+        </div>
+        <div class="feature">
+          <h3>v0.3 · Dynamic pages</h3>
+          <p>Optional JavaScript rendering for SPAs and dashboards, with the same JSON contract.</p>
+        </div>
+        <div class="feature">
+          <h3>v1.0 · Production standard</h3>
+          <p>Dashboards, multi-key management, quotas, monitoring, webhooks, and a fully versioned specification.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <span>© AI2JSON. The web, in a format AIs can understand.</span>
+      <nav>
+        <a href="#spec">Spec</a>
+        <a href="#docs">Docs</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#">GitHub</a>
+        <a href="mailto:contact@ai2json.com">Contact</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+</html>
