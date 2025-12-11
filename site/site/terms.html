@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>A2J — Terms of Service</title>
+  <meta name="description" content="A2J terms of service. Basic usage rules for the A2J API during Public Beta.">
+  <style>
+    :root {
+      color-scheme: dark light;
+      --bg: #020313;
+      --fg: #f7f7fb;
+      --fg-soft: #9ea3c0;
+      --accent: #4f7cff;
+      --border-soft: rgba(255,255,255,0.06);
+      --shadow-soft: 0 26px 60px rgba(0,0,0,0.72);
+      --radius-lg: 18px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background:
+        radial-gradient(circle at 0% -10%, #1b2b68 0, transparent 55%),
+        radial-gradient(circle at 100% 0%, #321b68 0, transparent 55%),
+        linear-gradient(180deg, #020313 0, #050817 55%, #020313 100%);
+      color: var(--fg);
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .page { max-width: 980px; margin: 0 auto; padding: 22px 18px 80px; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; margin-bottom: 18px; flex-wrap: wrap;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo-orb {
+      width: 34px; height: 34px; border-radius: 999px;
+      background: conic-gradient(from 170deg, #4f7cff, #86e3ff, #c19bff, #4f7cff);
+      position: relative;
+      box-shadow: 0 0 0 2px #020313, 0 18px 32px rgba(0,0,0,0.65);
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 15px; color: #fff;
+    }
+    .logo-orb::after {
+      content: ""; position: absolute; inset: 3px; border-radius: inherit;
+      background: radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 55%);
+      mix-blend-mode: screen;
+    }
+    .logo-orb span { position: relative; z-index: 1; letter-spacing: 0.05em; }
+    .logo-text-main { font-weight: 600; font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .logo-text-sub { font-size: 11px; color: var(--fg-soft); }
+
+    nav { display: flex; gap: 14px; font-size: 13px; flex-wrap: wrap; }
+    nav a { color: var(--fg-soft); text-decoration: none; }
+    nav a:hover { color: var(--fg); }
+
+    .card {
+      border-radius: 22px;
+      border: 1px solid var(--border-soft);
+      background: rgba(4,7,28,0.96);
+      padding: 16px 16px 18px;
+      box-shadow: var(--shadow-soft);
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 4px 11px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(2,3,19,0.8);
+      font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--fg-soft);
+      margin-bottom: 10px;
+    }
+    h1 { margin: 0 0 10px; font-size: 28px; line-height: 1.15; }
+    p, li { color: var(--fg-soft); font-size: 13px; line-height: 1.7; }
+    ul { margin: 10px 0 0; padding-left: 18px; }
+    code { font-size: 0.95em; }
+
+    footer {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(27,31,60,0.95);
+      font-size: 11px;
+      color: var(--fg-soft);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer nav { display: flex; gap: 12px; flex-wrap: wrap; }
+    footer a { color: var(--fg-soft); }
+    footer a:hover { color: var(--fg); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="logo-orb"><span>A2J</span></div>
+        <div>
+          <div class="logo-text-main">A2J · AI2JSON</div>
+          <div class="logo-text-sub">Terms of Service</div>
+        </div>
+      </div>
+      <nav>
+        <a href="./index.html">Home</a>
+        <a href="./docs.html">Docs</a>
+        <a href="./spec.html">Spec</a>
+        <a href="./privacy.html">Privacy</a>
+      </nav>
+    </header>
+
+    <main class="card">
+      <div class="eyebrow">Public Beta</div>
+      <h1>Terms of Service</h1>
+      <p><strong>Last updated:</strong> 2025-12-11</p>
+
+      <p>
+        By using A2J (AI2JSON), you agree to these terms. During Public Beta, the service may change, be rate-limited, or be unavailable.
+      </p>
+
+      <h2 style="margin:18px 0 8px; font-size:16px;">Acceptable use</h2>
+      <ul>
+        <li>Use the API only with public HTTP/HTTPS URLs you are allowed to access.</li>
+        <li>Do not use A2J to bypass paywalls, authentication, or access controls.</li>
+        <li>Do not use A2J for unlawful content or activities.</li>
+        <li>Do not overload or abuse the service (rate limits apply).</li>
+      </ul>
+
+      <h2 style="margin:18px 0 8px; font-size:16px;">Service limitations</h2>
+      <ul>
+        <li>Some websites may block automated fetches or restrict access.</li>
+        <li>Extraction quality depends on the page structure and may vary.</li>
+        <li>We may temporarily block domains or URLs for security and abuse prevention.</li>
+      </ul>
+
+      <h2 style="margin:18px 0 8px; font-size:16px;">No warranties</h2>
+      <p>
+        A2J is provided “as is” without warranties of any kind. You are responsible for how you use the output.
+      </p>
+
+      <h2 style="margin:18px 0 8px; font-size:16px;">Contact</h2>
+      <p>
+        Questions: <a href="mailto:contact@ai2json.com">contact@ai2json.com</a>
+      </p>
+    </main>
+
+    <footer>
+      <span>© A2J · AI2JSON.</span>
+      <nav>
+        <a href="./index.html">Home</a>
+        <a href="./privacy.html">Privacy</a>
+        <a href="./terms.html">Terms</a>
+        <a href="mailto:contact@ai2json.com">Contact</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+      </html>
