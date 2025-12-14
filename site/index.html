@@ -1,562 +1,284 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id="top">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark light">
-  <title>A2J — Turn Any Webpage Into Clean AI-Ready JSON</title>
-  <meta name="description" content="A2J (AI2JSON) turns any public webpage into clean, structured JSON designed for AI agents, LLMs and RAG pipelines, following the webpage.ai.v0.1 specification.">
+  <title>AI2JSON — Web → JSON for AI Reading</title>
+  <meta name="description" content="AI2JSON converts any public webpage into clean, structured JSON so LLMs and RAG pipelines can read content without HTML noise. Free public sandbox. No API key.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
   <style>
-    :root {
-      color-scheme: dark light;
-      --bg: #020313;
-      --bg-alt: #050821;
-      --bg-soft: #070b1d;
-      --fg: #f7f7fb;
-      --fg-soft: #9ea3c0;
-      --fg-softer: #6e7390;
-      --accent: #4f7cff;
-      --accent-soft: rgba(79,124,255,0.18);
-      --accent-strong: #76e4ff;
-      --border: #272b45;
-      --border-soft: #151729;
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --shadow-soft: 0 26px 60px rgba(0,0,0,0.72);
+    :root{
+      color-scheme:dark light;
+      --bg:#020313;
+      --bg-alt:#050821;
+      --fg:#f7f7fb;
+      --fg-soft:#9ea3c0;
+      --fg-softer:#6e7390;
+      --accent:#4f7cff;
+      --accent-soft:rgba(79,124,255,.18);
+      --accent-strong:#76e4ff;
+      --border:#272b45;
+      --border-soft:#151729;
+      --radius-lg:18px;
+      --radius-md:12px;
+      --shadow-soft:0 26px 60px rgba(0,0,0,.72);
     }
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif;
       background:
         radial-gradient(circle at 0% -10%, #1b2b68 0, transparent 55%),
         radial-gradient(circle at 100% 0%, #321b68 0, transparent 55%),
         linear-gradient(180deg, #020313 0, #050817 55%, #020313 100%);
-      color: var(--fg);
-      -webkit-font-smoothing: antialiased;
+      color:var(--fg);
+      -webkit-font-smoothing:antialiased;
+    }
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
+    .page{max-width:1080px;margin:0 auto;padding:22px 18px 72px}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      margin-bottom:30px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo-orb{
+      width:34px;height:34px;border-radius:999px;
+      background:conic-gradient(from 170deg,#4f7cff,#86e3ff,#c19bff,#4f7cff);
+      position:relative;
+      box-shadow:0 0 0 2px #020313,0 18px 32px rgba(0,0,0,.65);
+      display:inline-flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:15px;color:#fff;letter-spacing:.06em;
+    }
+    .logo-orb::after{
+      content:"";position:absolute;inset:3px;border-radius:inherit;
+      background:radial-gradient(circle at 30% 10%, rgba(255,255,255,.45), transparent 55%);
+      mix-blend-mode:screen;
+    }
+    .logo-orb span{position:relative;z-index:1}
+    .logo-text-main{font-weight:650;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+    .logo-text-sub{font-size:11px;color:var(--fg-soft)}
+    nav{display:flex;align-items:center;gap:16px;font-size:13px;flex-wrap:wrap;justify-content:flex-end}
+    nav a{color:var(--fg-soft)}
+    nav a:hover{color:var(--fg)}
+    .nav-cta{
+      padding:8px 14px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:radial-gradient(circle at 0 0, rgba(118,228,255,.14), transparent 55%);
+      display:inline-flex;align-items:center;gap:7px;
+      font-size:12px;font-weight:550;color:var(--fg);
+    }
+    .nav-cta span.dot{
+      width:7px;height:7px;border-radius:999px;background:#2cf5aa;
+      box-shadow:0 0 0 4px rgba(44,245,170,.2);
+    }
+    @media (max-width:860px){
+      header{flex-direction:column;align-items:flex-start}
+      nav{justify-content:flex-start}
     }
 
-    a {
-      color: var(--accent);
-      text-decoration: none;
+    main{
+      display:grid;
+      grid-template-columns:minmax(0, 1.3fr) minmax(0, 1.1fr);
+      gap:28px;
+      align-items:flex-start;
     }
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .page {
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 22px 18px 80px;
+    @media (max-width:900px){
+      main{grid-template-columns:minmax(0,1fr)}
     }
 
-    /* Header */
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 34px;
+    .eyebrow-row{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+    .eyebrow{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:4px 11px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(2,3,19,.8);
+      font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+      color:var(--fg-soft);
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .eyebrow-badge{
+      padding:3px 9px;border-radius:999px;
+      background:var(--accent-soft);
+      color:#dde5ff;letter-spacing:0;text-transform:none;font-weight:550;
     }
-    .logo-orb {
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
+
+    h1{margin:0 0 12px;font-size:clamp(32px,4.6vw,46px);line-height:1.05}
+    h1 .highlight{
+      background-image:linear-gradient(120deg,#76e4ff,#c19bff);
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .lead{
+      font-size:15px;line-height:1.65;color:var(--fg-soft);
+      max-width:620px;margin:0 0 18px;
+    }
+    .hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
+    .pill{
+      padding:4px 10px;border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(6,8,29,.9);
+      font-size:11px;color:var(--fg-soft);
+      display:inline-flex;align-items:center;gap:6px;
+    }
+    .pill-dot{width:6px;height:6px;border-radius:999px;background:var(--accent-strong)}
+    .cta-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
+    .btn{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:9px 18px;border-radius:999px;border:0;
+      font-size:13px;font-weight:650;cursor:pointer;
+      background:linear-gradient(135deg,#4f7cff,#76e4ff);
+      color:#020313;text-decoration:none;
+      box-shadow:0 14px 30px rgba(0,0,0,.6);
+    }
+    .btn-outline{
+      display:inline-flex;align-items:center;justify-content:center;
+      padding:8px 16px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      font-size:13px;color:var(--fg);background:rgba(4,6,25,.7);
+      text-decoration:none;
+    }
+    .hero-note{
+      font-size:11px;color:var(--fg-softer);
+      display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;
+    }
+    .hero-note span{
+      padding:3px 8px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(2,4,19,.9);
+    }
+
+    .hero-panel{
+      border-radius:22px;
+      border:1px solid rgba(112,136,255,.3);
       background:
-        conic-gradient(from 170deg, #4f7cff, #86e3ff, #c19bff, #4f7cff);
-      position: relative;
-      box-shadow:
-        0 0 0 2px #020313,
-        0 18px 32px rgba(0,0,0,0.65);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 15px;
-      color: #fff;
+        radial-gradient(circle at 0 0, rgba(118,228,255,.18), transparent 60%),
+        radial-gradient(circle at 100% 0, rgba(83,124,255,.22), transparent 65%),
+        linear-gradient(145deg,#050821,#020313);
+      padding:14px 16px 16px;
+      box-shadow:var(--shadow-soft);
+      font-size:13px;
+      position:relative;
+      overflow:hidden;
     }
-    .logo-orb::after {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      border-radius: inherit;
-      background: radial-gradient(circle at 30% 10%, rgba(255,255,255,0.45), transparent 55%);
-      mix-blend-mode: screen;
+    .hero-panel::before{
+      content:"TRY IT NOW";
+      position:absolute;right:16px;top:12px;
+      font-size:9px;text-transform:uppercase;letter-spacing:.16em;
+      color:rgba(223,230,255,.45);
     }
-    .logo-orb span {
-      position: relative;
-      z-index: 1;
-      letter-spacing: 0.05em;
-    }
-    .logo-text-main {
-      font-weight: 600;
-      font-size: 16px;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .logo-text-sub {
-      font-size: 11px;
-      color: var(--fg-soft);
+    .panel-title{
+      font-size:12px;text-transform:uppercase;letter-spacing:.16em;
+      color:var(--fg-soft);margin:0 0 10px;
     }
 
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      font-size: 13px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+    .field{
+      display:flex;gap:10px;align-items:center;margin-bottom:10px;
     }
-    nav a {
-      color: var(--fg-soft);
-      text-decoration: none;
+    .input{
+      width:100%;
+      padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(2,4,18,.55);
+      color:var(--fg);
+      outline:none;
+      font-size:13px;
     }
-    nav a:hover {
-      color: var(--fg);
+    .input::placeholder{color:rgba(158,163,192,.7)}
+    .small-btn{
+      padding:10px 14px;border-radius:12px;border:0;
+      background:linear-gradient(135deg,#4f7cff,#76e4ff);
+      color:#020313;font-weight:700;cursor:pointer;
+      white-space:nowrap;
     }
-
-    .nav-cta {
-      padding: 8px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: radial-gradient(circle at 0 0, rgba(118,228,255,0.14), transparent 55%);
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--fg);
-    }
-    .nav-cta span.dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #2cf5aa;
-      box-shadow: 0 0 0 4px rgba(44,245,170,0.2);
+    .small-btn[disabled]{opacity:.55;cursor:not-allowed}
+    .mini-row{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+    .mini{
+      font-size:11px;color:var(--fg-soft);
+      padding:4px 9px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(2,4,19,.65);
     }
 
-    @media (max-width: 860px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      nav {
-        justify-content: flex-start;
-      }
+    .code-window{
+      border-radius:14px;
+      border:1px solid rgba(26,33,68,.95);
+      background:radial-gradient(circle at 10% 0,#161c3e,#050821);
+      padding:9px 10px 10px;
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:11px;color:#dde3ff;
+      overflow-x:auto;
+      white-space:pre;
+      line-height:1.5;
+      margin:0 0 10px;
+      min-height:160px;
+    }
+    .code-window-header{
+      display:flex;align-items:center;justify-content:space-between;
+      margin-bottom:6px;font-size:10px;color:var(--fg-softer);
+    }
+    .dots{display:inline-flex;gap:4px}
+    .dot{width:7px;height:7px;border-radius:999px;background:#ff5f57}
+    .dot:nth-child(2){background:#febc2e}
+    .dot:nth-child(3){background:#28c840}
+    .code-pill{border-radius:999px;border:1px solid rgba(255,255,255,.12);padding:2px 7px}
+    .panel-footer{font-size:11px;color:var(--fg-soft)}
+    .panel-footer b{color:var(--fg)}
+
+    section{margin-top:44px}
+    .section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--fg-soft);margin-bottom:6px}
+    h2.section-title{font-size:20px;margin:0 0 8px}
+    .section-sub{font-size:13px;color:var(--fg-soft);max-width:760px;margin:0 0 16px}
+
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+    .feature{
+      border-radius:var(--radius-lg);
+      border:1px solid var(--border-soft);
+      padding:13px 14px 15px;
+      background:radial-gradient(circle at 0 0, rgba(118,228,255,.08), transparent 70%), rgba(5,8,28,.96);
+      font-size:13px;
+    }
+    .feature h3{margin:0 0 6px;font-size:13px}
+    .feature p{margin:0;font-size:12px;line-height:1.6;color:var(--fg-soft)}
+
+    .table-wrap{
+      border-radius:var(--radius-lg);
+      border:1px solid var(--border-soft);
+      overflow:hidden;
+      background:rgba(5,8,30,.97);
+    }
+    .table{width:100%;border-collapse:collapse;font-size:12px}
+    .table th,.table td{padding:7px 10px;text-align:left;border-bottom:1px solid rgba(32,36,66,.9)}
+    .table th{
+      font-size:11px;color:var(--fg-soft);
+      text-transform:uppercase;letter-spacing:.12em;
+      background:rgba(10,13,40,.85);
+    }
+    .table tr:last-child td{border-bottom:none}
+    .table code{font-size:11px}
+
+    .mono-block{
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
+      font-size:11px;
+      background:#050814;
+      border-radius:var(--radius-md);
+      border:1px solid #222845;
+      padding:10px 11px;
+      overflow-x:auto;
+      white-space:pre;
+      line-height:1.5;
     }
 
-    /* Hero layout */
-    main {
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1.1fr);
-      gap: 32px;
-      align-items: flex-start;
+    footer{
+      margin-top:44px;padding-top:18px;
+      border-top:1px solid rgba(27,31,60,.95);
+      font-size:11px;color:var(--fg-soft);
+      display:flex;flex-wrap:wrap;gap:10px;
+      justify-content:space-between;align-items:center;
     }
-    @media (max-width: 900px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-      }
-    }
-
-    .eyebrow-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 4px 11px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(2,3,19,0.8);
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--fg-soft);
-    }
-    .eyebrow-badge {
-      padding: 3px 9px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: #dde5ff;
-      letter-spacing: 0;
-      text-transform: none;
-      font-weight: 500;
-    }
-
-    h1 {
-      margin: 0 0 12px;
-      font-size: clamp(32px, 4.6vw, 46px);
-      line-height: 1.05;
-    }
-    h1 span.highlight {
-      background-image: linear-gradient(120deg, #76e4ff, #c19bff);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .lead {
-      font-size: 15px;
-      line-height: 1.65;
-      color: var(--fg-soft);
-      max-width: 560px;
-      margin-bottom: 18px;
-    }
-
-    .hero-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-    .pill {
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(6,8,29,0.9);
-      font-size: 11px;
-      color: var(--fg-soft);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .pill-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent-strong);
-    }
-
-    .cta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 9px 18px;
-      border-radius: 999px;
-      border: 0;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      background: linear-gradient(135deg, #4f7cff, #76e4ff);
-      color: #020313;
-      text-decoration: none;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.6);
-    }
-    .btn span.chevron {
-      font-size: 12px;
-      margin-left: 4px;
-    }
-    .btn-outline {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 8px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.14);
-      font-size: 13px;
-      color: var(--fg);
-      background: rgba(4,6,25,0.7);
-      text-decoration: none;
-    }
-
-    .hero-note {
-      font-size: 11px;
-      color: var(--fg-softer);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-    .hero-note span {
-      padding: 3px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(2,4,19,0.9);
-    }
-
-    /* Example panel */
-    .hero-panel {
-      border-radius: 22px;
-      border: 1px solid rgba(112,136,255,0.3);
-      background:
-        radial-gradient(circle at 0 0, rgba(118,228,255,0.18), transparent 60%),
-        radial-gradient(circle at 100% 0, rgba(83,124,255,0.22), transparent 65%),
-        linear-gradient(145deg, #050821, #020313);
-      padding: 14px 16px 16px;
-      box-shadow: var(--shadow-soft);
-      font-size: 13px;
-      position: relative;
-      overflow: hidden;
-    }
-    .hero-panel::before {
-      content: "A2J · LIVE EXAMPLE";
-      position: absolute;
-      right: 16px;
-      top: 12px;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: rgba(223,230,255,0.45);
-    }
-    .panel-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .panel-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--fg-soft);
-    }
-    .panel-tabs {
-      display: inline-flex;
-      gap: 4px;
-      background: rgba(2,4,18,0.8);
-      padding: 3px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 11px;
-    }
-    .panel-tabs span {
-      padding: 3px 9px;
-      border-radius: 999px;
-      cursor: default;
-    }
-    .panel-tabs span.active {
-      background: rgba(255,255,255,0.08);
-      color: #fff;
-    }
-
-    .code-window {
-      border-radius: 14px;
-      border: 1px solid rgba(26,33,68,0.95);
-      background: radial-gradient(circle at 10% 0, #161c3e, #050821);
-      padding: 9px 10px 10px;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      color: #dde3ff;
-      overflow-x: auto;
-      white-space: pre;
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-    .code-window-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 10px;
-      color: var(--fg-softer);
-    }
-    .dots {
-      display: inline-flex;
-      gap: 4px;
-    }
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: #ff5f57;
-    }
-    .dot:nth-child(2) { background: #febc2e; }
-    .dot:nth-child(3) { background: #28c840; }
-    .code-pill {
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.12);
-      padding: 2px 7px;
-    }
-    .panel-footer {
-      font-size: 11px;
-      color: var(--fg-soft);
-    }
-
-    /* Sections */
-    section {
-      margin-top: 52px;
-    }
-    .section-kicker {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.16em;
-      color: var(--fg-soft);
-      margin-bottom: 6px;
-    }
-    h2.section-title {
-      font-size: 22px;
-      margin: 0 0 8px;
-    }
-    .section-sub {
-      font-size: 13px;
-      color: var(--fg-soft);
-      max-width: 720px;
-      margin-bottom: 20px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
-      gap: 16px;
-    }
-    .feature {
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-soft);
-      padding: 13px 14px 15px;
-      background: radial-gradient(circle at 0 0, rgba(118,228,255,0.08), transparent 70%), rgba(5,8,28,0.96);
-      font-size: 13px;
-    }
-    .feature h3 {
-      margin: 0 0 6px;
-      font-size: 13px;
-    }
-    .feature p {
-      margin: 0;
-      font-size: 12px;
-      line-height: 1.6;
-      color: var(--fg-soft);
-    }
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 8px;
-    }
-    .tag {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.28);
-      color: var(--fg-soft);
-    }
-
-    /* Table spec */
-    .table-wrap {
-      border-radius: var(--radius-lg);
-      border: 1px solid var(--border-soft);
-      overflow: hidden;
-      background: rgba(5,8,30,0.97);
-    }
-    .table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 12px;
-    }
-    .table th,
-    .table td {
-      padding: 7px 10px;
-      text-align: left;
-      border-bottom: 1px solid rgba(32,36,66,0.9);
-    }
-    .table th {
-      font-size: 11px;
-      color: var(--fg-soft);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      background: rgba(10,13,40,0.85);
-    }
-    .table tr:last-child td {
-      border-bottom: none;
-    }
-    .table code {
-      font-size: 11px;
-    }
-
-    /* Pricing */
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit,minmax(240px,1fr));
-      gap: 16px;
-    }
-    .pricing-card {
-      border-radius: var(--radius-lg);
-      border: 1px solid rgba(255,255,255,0.06);
-      background: radial-gradient(circle at 0 0, rgba(79,124,255,0.18), transparent 70%), rgba(4,7,28,0.96);
-      padding: 14px 15px 16px;
-      font-size: 13px;
-    }
-    .pricing-card.highlight {
-      border-color: rgba(118,228,255,0.7);
-      box-shadow: 0 22px 50px rgba(0,0,0,0.75);
-    }
-    .pricing-name {
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-    .pricing-note {
-      font-size: 11px;
-      color: var(--fg-soft);
-      margin-bottom: 8px;
-    }
-    .pricing-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 8px;
-      font-size: 12px;
-      color: var(--fg-soft);
-    }
-    .pricing-list li {
-      margin-bottom: 4px;
-    }
-    .pricing-price {
-      font-size: 12px;
-      color: var(--fg-soft);
-      font-style: italic;
-    }
-
-    .mono-block {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      font-size: 11px;
-      background: #050814;
-      border-radius: var(--radius-md);
-      border: 1px solid #222845;
-      padding: 10px 11px;
-      overflow-x: auto;
-      white-space: pre;
-      line-height: 1.5;
-    }
-
-    footer {
-      margin-top: 44px;
-      padding-top: 18px;
-      border-top: 1px solid rgba(27,31,60,0.95);
-      font-size: 11px;
-      color: var(--fg-soft);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: space-between;
-      align-items: center;
-    }
-    footer nav {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-    }
-    footer a {
-      color: var(--fg-soft);
-    }
-    footer a:hover {
-      color: var(--fg);
-    }
+    footer nav{display:flex;gap:12px;flex-wrap:wrap}
+    footer a{color:var(--fg-soft)}
+    footer a:hover{color:var(--fg)}
   </style>
 </head>
 <body>
@@ -565,377 +287,172 @@
       <div class="brand">
         <div class="logo-orb"><span>A2J</span></div>
         <div>
-          <div class="logo-text-main">A2J · AI2JSON</div>
-          <div class="logo-text-sub">The web, pre-parsed for AI agents and RAG.</div>
+          <div class="logo-text-main">AI2JSON</div>
+          <div class="logo-text-sub">Web → JSON for AI reading.</div>
         </div>
       </div>
       <nav>
-        <a href="#how">How it works</a>
-        <a href="./spec.html">webpage.ai</a>
-        <a href="#use-cases">Use cases</a>
-        <a href="#pricing">Pricing</a>
-        <a href="./docs.html">API</a>
+        <a href="#try">Try</a>
+        <a href="#why">Why</a>
+        <a href="#contract">JSON</a>
         <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a class="nav-cta" href="./docs.html"><span class="dot"></span> Early access</a>
+        <a class="nav-cta" href="#try"><span class="dot"></span> Free sandbox</a>
       </nav>
     </header>
 
     <main>
       <div>
         <div class="eyebrow-row">
-          <div class="eyebrow">Public Beta</div>
-          <div class="eyebrow"><span class="eyebrow-badge">A2J</span> Web → JSON for AI</div>
+          <div class="eyebrow">Public sandbox</div>
+          <div class="eyebrow"><span class="eyebrow-badge">AI2JSON</span> URL → JSON</div>
         </div>
-        <h1><span class="highlight">A2J</span> turns any public webpage into clean AI-ready JSON.</h1>
+
+        <h1><span class="highlight">AI2JSON</span> turns any public webpage into clean JSON for AI reading.</h1>
+
         <p class="lead">
-          A2J (AI2JSON) fetches a URL, extracts the real content, cleans it, structures it into sections, adds metadata and a content hash, and returns a single, predictable JSON document following the <strong>webpage.ai.v0.1</strong> spec.
+          Most webpages are noisy: menus, footers, cookie banners, scripts. AI2JSON extracts the real content and returns a stable JSON structure you can feed into LLMs and RAG pipelines.
+          <b>No summary. No interpretation.</b>
         </p>
+
         <div class="hero-pills">
-          <div class="pill"><span class="pill-dot"></span>No HTML parsing in your code</div>
-          <div class="pill">Structured <code>sections[]</code> with headings</div>
-          <div class="pill">Language, type and metadata</div>
-          <div class="pill">Factual summary (v0.1)</div>
-          <div class="pill">SHA-256 fingerprint of content</div>
+          <div class="pill"><span class="pill-dot"></span>Extract main content</div>
+          <div class="pill">Preserve <code>sections[]</code></div>
+          <div class="pill">Deterministic output</div>
+          <div class="pill">Content hash for diffing</div>
         </div>
+
         <div class="cta-row">
-          <a href="./docs.html" class="btn">View API quickstart <span class="chevron">›</span></a>
-          <a href="./spec.html" class="btn-outline">See full JSON format</a>
+          <a href="#try" class="btn">Try with a URL <span class="chevron">›</span></a>
+          <a href="https://github.com/BACOUL/ai2json" class="btn-outline" target="_blank" rel="noopener noreferrer">Open GitHub</a>
         </div>
+
         <div class="hero-note">
-          <span>Spec: <strong>webpage.ai.v0.1</strong></span>
-          <span>Designed for LLMs, agents and RAG pipelines.</span>
-          <span>One URL in, one JSON contract out.</span>
+          <span>Free. No API key.</span>
+          <span>Rate-limited public sandbox.</span>
+          <span>Public webpages only.</span>
         </div>
       </div>
 
-      <aside class="hero-panel" id="example">
-        <div class="panel-header">
-          <div class="panel-title">From URL to AI-ready JSON</div>
-          <div class="panel-tabs">
-            <span class="active">Request</span>
-            <span>Response</span>
-          </div>
+      <aside class="hero-panel" id="try">
+        <div class="panel-title">Try it now</div>
+
+        <div class="field">
+          <input id="url" class="input" type="url" inputmode="url" autocomplete="off"
+                 placeholder="Paste a public URL (e.g. https://example.com/article)" />
+          <button id="convert" class="small-btn">Convert</button>
         </div>
 
-        <div class="code-window">
-          <div class="code-window-header">
-            <div class="dots">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-            <span class="code-pill">curl · A2J</span>
-          </div>
-curl "https://api.ai2json.com/v1/transform?url=https://example.com/article-ai" \
-  -H "Authorization: Bearer YOUR_API_KEY" \
-  -H "Accept: application/json"
+        <div class="mini-row" aria-label="sandbox limits">
+          <span class="mini">No API key</span>
+          <span class="mini">Rate-limited</span>
+          <span class="mini">Timeout & size limits</span>
         </div>
 
-        <div class="code-window">
-          <div class="code-window-header">
-            <span>Excerpt of <code>webpage.ai.v0.1</code></span>
-            <span class="code-pill">JSON</span>
-          </div>
-{
-  "spec": "webpage.ai.v0.1",
-  "url": "https://example.com/article-ai",
-  "canonical_url": "https://example.com/article-ai",
-  "last_fetched": "2025-01-02T10:11:12Z",
-  "language": "en",
-  "content_hash": "sha256:abc123...",
-  "title": "How AI regulation is changing",
-  "summary": "Short factual summary of the page content...",
-  "type": "article",
-  "sections": [
-    {
-      "heading": "Introduction",
-      "level": 1,
-      "id": "introduction",
-      "text": "Clean extracted text for the introduction section..."
-    }
-  ],
-  "links": [],
-  "meta": {},
-  "proof": {}
-}
+        <div class="code-window" id="out" aria-live="polite">
+          {
+            "spec": "ai2json.v0",
+            "url": "https://example.com",
+            "title": "Example Page",
+            "lang": "en",
+            "hash": "sha256:…",
+            "sections": [
+              { "h": "Introduction", "l": 1, "t": "Clean extracted content…" }
+            ]
+          }
         </div>
 
         <div class="panel-footer">
-          Feed this JSON directly into prompts, tools, agents or RAG — with a stable schema and a hash that proves exactly what your AI has read.
+          How to use with your LLM: send <b>title</b> + <b>sections[].t</b>. Ignore metadata unless you need it.
         </div>
       </aside>
     </main>
 
-    <section id="how">
-      <div class="section-kicker">How A2J works</div>
-      <h2 class="section-title">A thin, opinionated layer between the web and your AI stack.</h2>
+    <section id="why">
+      <div class="section-kicker">Why it helps</div>
+      <h2 class="section-title">A small contract between the web and your AI stack.</h2>
       <p class="section-sub">
-        A2J is intentionally minimal: one endpoint, one spec, stateless by design. It focuses on turning messy HTML into the clean JSON you wish the web had been built with.
+        AI2JSON does one thing: turn messy HTML into clean, predictable inputs.
       </p>
       <div class="grid">
         <div class="feature">
-          <h3>1. Fetch and detect</h3>
-          <p>A2J fetches the target URL, follows redirects when needed and detects the main content using a reader-style heuristic instead of scraping everything.</p>
+          <h3>Less noise</h3>
+          <p>Remove boilerplate (nav, footers, banners) so models focus on content.</p>
         </div>
         <div class="feature">
-          <h3>2. Clean and normalize</h3>
-          <p>Navigation, ads, scripts and layout noise are stripped away. The remaining content is normalized with consistent spacing and line-breaking.</p>
+          <h3>Better chunks</h3>
+          <p><code>sections[]</code> are natural units for prompting, RAG indexing, and change tracking.</p>
         </div>
         <div class="feature">
-          <h3>3. Structure into sections</h3>
-          <p>Headings and paragraphs are grouped into <code>sections[]</code>, each with a heading, level, id and text field, so agents and RAG pipelines can reason section by section.</p>
+          <h3>Deterministic</h3>
+          <p>Stable JSON makes debugging and reproducibility easier than raw HTML scraping.</p>
         </div>
         <div class="feature">
-          <h3>4. Summarize and fingerprint</h3>
-          <p>A factual summary is generated and a SHA-256 hash over the extracted text becomes a stable fingerprint. You know exactly what was read and when.</p>
+          <h3>Hash for diffing</h3>
+          <p>A SHA-256 fingerprint lets you detect meaningful content changes over time.</p>
         </div>
       </div>
     </section>
 
-    <section id="spec">
-      <div class="section-kicker">JSON format</div>
-      <h2 class="section-title">The <code>webpage.ai.v0.1</code> contract.</h2>
+    <section id="contract">
+      <div class="section-kicker">JSON contract</div>
+      <h2 class="section-title">Minimal schema, designed for LLM consumption.</h2>
       <p class="section-sub">
-        Every A2J response is a single JSON document, designed to be easy to ingest and stable over time. No guessing, no reverse-engineering, no undocumented fields.
+        Keep it small: short field names reduce tokens. The main payload is always <code>sections[].t</code>.
       </p>
+
       <div class="table-wrap">
         <table class="table">
           <thead>
-          <tr>
-            <th>Field</th>
-            <th>Type</th>
-            <th>Purpose</th>
-          </tr>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Meaning</th>
+            </tr>
           </thead>
           <tbody>
-          <tr>
-            <td><code>spec</code></td>
-            <td>string</td>
-            <td>Always <code>"webpage.ai.v0.1"</code> for this version.</td>
-          </tr>
-          <tr>
-            <td><code>url</code></td>
-            <td>string</td>
-            <td>URL requested by the client.</td>
-          </tr>
-          <tr>
-            <td><code>canonical_url</code></td>
-            <td>string</td>
-            <td>Canonical URL if detected, otherwise mirrors <code>url</code>.</td>
-          </tr>
-          <tr>
-            <td><code>last_fetched</code></td>
-            <td>string</td>
-            <td>ISO&nbsp;8601 UTC timestamp of the snapshot.</td>
-          </tr>
-          <tr>
-            <td><code>language</code></td>
-            <td>string</td>
-            <td>Best-guess language, for example <code>"en"</code> or <code>"fr"</code>.</td>
-          </tr>
-          <tr>
-            <td><code>content_hash</code></td>
-            <td>string</td>
-            <td>SHA-256 of extracted text, prefixed with <code>sha256:</code>.</td>
-          </tr>
-          <tr>
-            <td><code>title</code></td>
-            <td>string</td>
-            <td>Main page title.</td>
-          </tr>
-          <tr>
-            <td><code>summary</code></td>
-            <td>string</td>
-            <td>Short factual summary of the page content.</td>
-          </tr>
-          <tr>
-            <td><code>type</code></td>
-            <td>string</td>
-            <td>One of <code>"article"</code>, <code>"homepage"</code>, or <code>"unknown"</code>.</td>
-          </tr>
-          <tr>
-            <td><code>sections[]</code></td>
-            <td>array</td>
-            <td>Ordered blocks with <code>heading</code>, <code>level</code>, <code>id</code>, <code>text</code>.</td>
-          </tr>
-          <tr>
-            <td><code>links[]</code></td>
-            <td>array</td>
-            <td>Optional extracted links for navigation or reference.</td>
-          </tr>
-          <tr>
-            <td><code>meta</code></td>
-            <td>object</td>
-            <td>Best-effort metadata such as site name, author, dates, tags.</td>
-          </tr>
-          <tr>
-            <td><code>proof</code></td>
-            <td>object</td>
-            <td>Reserved for future content-integrity proofs.</td>
-          </tr>
+            <tr><td><code>spec</code></td><td>string</td><td>Always <code>ai2json.v0</code>.</td></tr>
+            <tr><td><code>url</code></td><td>string</td><td>Requested URL.</td></tr>
+            <tr><td><code>title</code></td><td>string</td><td>Page title.</td></tr>
+            <tr><td><code>lang</code></td><td>string</td><td>Best-guess language code.</td></tr>
+            <tr><td><code>hash</code></td><td>string</td><td>SHA-256 over extracted text (prefixed with <code>sha256:</code>).</td></tr>
+            <tr><td><code>sections[]</code></td><td>array</td><td>Ordered content blocks.</td></tr>
+            <tr><td><code>sections[].h</code></td><td>string/null</td><td>Heading (if any).</td></tr>
+            <tr><td><code>sections[].l</code></td><td>number</td><td>Heading level (0–3).</td></tr>
+            <tr><td><code>sections[].t</code></td><td>string</td><td>Clean text for this section.</td></tr>
           </tbody>
         </table>
       </div>
-      <p class="section-sub" style="margin-top:10px;">
-        The formal specification lives in <code>spec/webpage-ai-v0.1.md</code> in the repository and is kept stable for all of v0.1.
-        See the full spec page: <a href="./spec.html">webpage.ai.v0.1</a>.
+
+      <p class="section-sub" style="margin-top:12px;">
+        Public sandbox endpoint (example): <span class="mono-block">GET /parse?url=&lt;ENCODED_URL&gt;</span>
       </p>
     </section>
 
-    <section id="use-cases">
-      <div class="section-kicker">Who A2J is for</div>
-      <h2 class="section-title">A single JSON bridge for AI agents, RAG and monitoring.</h2>
+    <section id="limits">
+      <div class="section-kicker">Sandbox limits</div>
+      <h2 class="section-title">Free by default, protected against abuse.</h2>
       <p class="section-sub">
-        Any time a model needs to “read” the public web, A2J can sit between the page and your AI stack, delivering a stable contract instead of raw HTML.
-      </p>
-      <div class="grid">
-        <div class="feature">
-          <h3>Agents that browse</h3>
-          <p>Let LLM agents consume structured sections instead of brittle HTML, with stable IDs they can reference and revisit.</p>
-          <div class="tag-row">
-            <span class="tag">LLM agents</span>
-            <span class="tag">Tool calls</span>
-            <span class="tag">Workflows</span>
-          </div>
-        </div>
-        <div class="feature">
-          <h3>RAG and knowledge pipelines</h3>
-          <p>Pre-clean content before embedding or indexing. Use <code>content_hash</code> as a stable key, and <code>sections[]</code> as natural chunks.</p>
-          <div class="tag-row">
-            <span class="tag">RAG</span>
-            <span class="tag">Vector stores</span>
-            <span class="tag">ETL</span>
-          </div>
-        </div>
-        <div class="feature">
-          <h3>Monitoring and compliance</h3>
-          <p>Track important pages (regulations, docs, terms) and detect meaningful content changes instead of layout noise.</p>
-          <div class="tag-row">
-            <span class="tag">Regulations</span>
-            <span class="tag">Docs</span>
-            <span class="tag">Change detection</span>
-          </div>
-        </div>
-        <div class="feature">
-          <h3>Developer tools and crawlers</h3>
-          <p>Replace internal scraping stacks with a single, documented API. Keep your code focused on reasoning, not parsing.</p>
-          <div class="tag-row">
-            <span class="tag">Dev tools</span>
-            <span class="tag">CLI / SDKs</span>
-            <span class="tag">Automation</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="pricing">
-      <div class="section-kicker">Early access</div>
-      <h2 class="section-title">Simple plans while A2J grows.</h2>
-      <p class="section-sub">
-        A2J starts with a developer-friendly free tier and scales to production workloads. During the beta, pricing and limits are intentionally simple and transparent.
-      </p>
-      <div class="pricing-grid">
-        <div class="pricing-card">
-          <div class="pricing-name">Free · Developer sandbox</div>
-          <div class="pricing-note">Try A2J, wire it into agents and side-projects.</div>
-          <ul class="pricing-list">
-            <li>Limited requests per month</li>
-            <li>Single API key</li>
-            <li>Access to <code>/v1/transform</code></li>
-            <li>Same JSON spec as paid plans</li>
-          </ul>
-          <div class="pricing-price">Best for experiments and prototypes.</div>
-        </div>
-        <div class="pricing-card highlight">
-          <div class="pricing-name">Pro · Projects and teams</div>
-          <div class="pricing-note">For production-grade agents, RAG and internal tools.</div>
-          <ul class="pricing-list">
-            <li>Higher, predictable monthly quotas</li>
-            <li>Multiple API keys per team</li>
-            <li>Priority support for issues</li>
-            <li>Access to new endpoints as they ship</li>
-          </ul>
-          <div class="pricing-price">Designed for serious workloads without complexity.</div>
-        </div>
-        <div class="pricing-card">
-          <div class="pricing-name">Enterprise · Custom</div>
-          <div class="pricing-note">For companies and high-volume platforms.</div>
-          <ul class="pricing-list">
-            <li>Custom limits and SLAs</li>
-            <li>Dedicated endpoints and IP ranges</li>
-            <li>Advanced observability and reporting</li>
-            <li>Optional private or on-prem deployment</li>
-          </ul>
-          <div class="pricing-price">Contact us to discuss requirements.</div>
-        </div>
-      </div>
-    </section>
-
-    <section id="docs">
-      <div class="section-kicker">API at a glance</div>
-      <h2 class="section-title">A single stateless endpoint in v0.1.</h2>
-      <p class="section-sub">
-        The first version of A2J is intentionally small: one endpoint, one spec, no surprises. You send a URL and an API key, you receive a <code>webpage.ai.v0.1</code> document.
+        This is a public sandbox. Requests are rate-limited and restricted to public HTTP(S) URLs. Very large pages and slow responses are rejected.
       </p>
       <div class="mono-block">
-Base URL (example)
-  https://api.ai2json.com
+Responses (JSON)
+  200  OK
+  400  invalid_url
+  403  forbidden_url (private IPs / non-http(s))
+  408  timeout
+  413  too_large
+  422  not_extractable
+  429  rate_limited
+  5xx  upstream_or_internal
 
-Endpoint
-  GET /v1/transform?url=&lt;ENCODED_URL&gt;
-
-Headers
-  Authorization: Bearer YOUR_API_KEY
-  Accept: application/json
-
-Query parameters
-  url       Required. Public page URL to transform.
-  lang      Optional. Preferred language for future advanced summaries.
-  no_cache  Optional. If true, forces a fresh fetch instead of using cache.
-
-Behaviour
-  200 OK    Body is a webpage.ai.v0.1 JSON document.
-  400       Invalid or missing url parameter.
-  401       Missing or invalid API key.
-  4xx       Other client errors.
-  5xx       Upstream or internal errors, with JSON error payload.
-      </div>
-      <p class="section-sub" style="margin-top:10px;">
-        Full documentation lives here: <a href="./docs.html">API Docs</a>.
-      </p>
-    </section>
-
-    <section id="roadmap">
-      <div class="section-kicker">Roadmap</div>
-      <h2 class="section-title">From focused utility to a standard way for AI to read the web.</h2>
-      <p class="section-sub">
-        A2J is built to stay small at the surface and powerful under the hood. The goal is to keep the core contract stable while adding capabilities that matter for real AI workloads.
-      </p>
-      <div class="grid">
-        <div class="feature">
-          <h3>v0.1 · HTML → JSON</h3>
-          <p>Single endpoint, <code>webpage.ai.v0.1</code> spec, basic extraction and summary, single early-access API key flow.</p>
-        </div>
-        <div class="feature">
-          <h3>v0.2 · Smarter summaries</h3>
-          <p>LLM-powered summaries with explicit language control, improved metadata, and better handling of long technical documents.</p>
-        </div>
-        <div class="feature">
-          <h3>v0.3 · Dynamic pages</h3>
-          <p>Optional JavaScript rendering for SPAs and dashboards, with the same JSON contract for downstream consumers.</p>
-        </div>
-        <div class="feature">
-          <h3>v1.0 · Production standard</h3>
-          <p>Dashboards, key management, quotas, monitoring, webhooks, and a formally versioned specification for long-term stability.</p>
-        </div>
+Tip
+  For LLM prompts, send only: title + sections[].t
       </div>
     </section>
 
     <footer>
-      <span>© A2J · AI2JSON. The web, in a format AIs can understand.</span>
+      <span>© AI2JSON — Web → JSON for AI reading.</span>
       <nav>
-        <a href="./spec.html">Spec</a>
-        <a href="./docs.html">API</a>
-        <a href="#pricing">Pricing</a>
-        <a href="#roadmap">Roadmap</a>
         <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a href="./privacy.html">Privacy</a>
         <a href="./terms.html">Terms</a>
@@ -943,6 +460,64 @@ Behaviour
       </nav>
     </footer>
   </div>
+
+  <script>
+    (function(){
+      const API_BASE = "https://api.ai2json.com"; // replace with your real base (or keep relative if same origin)
+      const $url = document.getElementById("url");
+      const $btn = document.getElementById("convert");
+      const $out = document.getElementById("out");
+
+      function safeText(v){ return (v == null) ? "" : String(v); }
+
+      function render(obj){
+        $out.textContent = JSON.stringify(obj, null, 2);
+      }
+
+      function errorObj(code, message){
+        return { error: code, message: message };
+      }
+
+      async function run(){
+        const raw = safeText($url.value).trim();
+        if(!raw) return render(errorObj("missing_url","Paste a public URL to convert."));
+        let u;
+        try { u = new URL(raw); } catch { return render(errorObj("invalid_url","Invalid URL format.")); }
+        if(u.protocol !== "http:" && u.protocol !== "https:") return render(errorObj("invalid_url","URL must start with http(s)."));
+
+        $btn.disabled = true;
+        $btn.textContent = "Converting…";
+        render({ status: "fetching", url: raw });
+
+        try{
+          const endpoint = API_BASE.replace(/\/$/,"") + "/parse?url=" + encodeURIComponent(raw);
+          const res = await fetch(endpoint, { method: "GET", headers: { "Accept":"application/json" } });
+          const ct = res.headers.get("content-type") || "";
+          let data = null;
+
+          if(ct.includes("application/json")){
+            data = await res.json();
+          }else{
+            const text = await res.text();
+            data = errorObj("bad_response","Expected JSON but received: " + text.slice(0, 120));
+          }
+
+          if(!res.ok){
+            render(Object.assign({ http_status: res.status }, data || errorObj("error","Request failed.")));
+          }else{
+            render(data);
+          }
+        }catch(e){
+          render(errorObj("network_error", safeText(e && e.message ? e.message : e)));
+        }finally{
+          $btn.disabled = false;
+          $btn.textContent = "Convert";
+        }
+      }
+
+      $btn.addEventListener("click", run);
+      $url.addEventListener("keydown", (e)=>{ if(e.key === "Enter") run(); });
+    })();
+  </script>
 </body>
 </html>
-`
