@@ -2,7 +2,7 @@
 <html lang="en" id="top">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="color-scheme" content="dark light">
   <title>AI2JSON — Web → JSON for AI Reading</title>
   <meta name="description" content="AI2JSON converts any public webpage into clean, structured JSON so LLMs and RAG pipelines can read content without HTML noise. Free public sandbox. No API key.">
@@ -37,7 +37,7 @@
     }
     a{color:var(--accent);text-decoration:none}
     a:hover{text-decoration:underline}
-    .page{max-width:1080px;margin:0 auto;padding:22px 18px 72px}
+    .page{max-width:1100px;margin:0 auto;padding:22px 18px 76px}
 
     header{
       display:flex;align-items:center;justify-content:space-between;gap:16px;
@@ -68,7 +68,7 @@
       border:1px solid rgba(255,255,255,.12);
       background:radial-gradient(circle at 0 0, rgba(118,228,255,.14), transparent 55%);
       display:inline-flex;align-items:center;gap:7px;
-      font-size:12px;font-weight:550;color:var(--fg);
+      font-size:12px;font-weight:650;color:var(--fg);
     }
     .nav-cta span.dot{
       width:7px;height:7px;border-radius:999px;background:#2cf5aa;
@@ -81,11 +81,11 @@
 
     main{
       display:grid;
-      grid-template-columns:minmax(0, 1.3fr) minmax(0, 1.1fr);
-      gap:28px;
+      grid-template-columns:minmax(0, 1.25fr) minmax(0, 1.15fr);
+      gap:26px;
       align-items:flex-start;
     }
-    @media (max-width:900px){
+    @media (max-width:980px){
       main{grid-template-columns:minmax(0,1fr)}
     }
 
@@ -101,7 +101,7 @@
     .eyebrow-badge{
       padding:3px 9px;border-radius:999px;
       background:var(--accent-soft);
-      color:#dde5ff;letter-spacing:0;text-transform:none;font-weight:550;
+      color:#dde5ff;letter-spacing:0;text-transform:none;font-weight:650;
     }
 
     h1{margin:0 0 12px;font-size:clamp(32px,4.6vw,46px);line-height:1.05}
@@ -111,8 +111,9 @@
     }
     .lead{
       font-size:15px;line-height:1.65;color:var(--fg-soft);
-      max-width:620px;margin:0 0 18px;
+      max-width:720px;margin:0 0 16px;
     }
+    .lead b{color:var(--fg)}
     .hero-pills{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px}
     .pill{
       padding:4px 10px;border-radius:999px;
@@ -126,7 +127,7 @@
     .btn{
       display:inline-flex;align-items:center;justify-content:center;
       padding:9px 18px;border-radius:999px;border:0;
-      font-size:13px;font-weight:650;cursor:pointer;
+      font-size:13px;font-weight:800;cursor:pointer;
       background:linear-gradient(135deg,#4f7cff,#76e4ff);
       color:#020313;text-decoration:none;
       box-shadow:0 14px 30px rgba(0,0,0,.6);
@@ -162,7 +163,7 @@
       overflow:hidden;
     }
     .hero-panel::before{
-      content:"TRY IT NOW";
+      content:"LIVE SANDBOX";
       position:absolute;right:16px;top:12px;
       font-size:9px;text-transform:uppercase;letter-spacing:.16em;
       color:rgba(223,230,255,.45);
@@ -172,9 +173,7 @@
       color:var(--fg-soft);margin:0 0 10px;
     }
 
-    .field{
-      display:flex;gap:10px;align-items:center;margin-bottom:10px;
-    }
+    .field{display:flex;gap:10px;align-items:center;margin-bottom:10px}
     .input{
       width:100%;
       padding:10px 12px;border-radius:12px;
@@ -188,7 +187,7 @@
     .small-btn{
       padding:10px 14px;border-radius:12px;border:0;
       background:linear-gradient(135deg,#4f7cff,#76e4ff);
-      color:#020313;font-weight:800;cursor:pointer;
+      color:#020313;font-weight:900;cursor:pointer;
       white-space:nowrap;
     }
     .small-btn[disabled]{opacity:.55;cursor:not-allowed}
@@ -198,6 +197,24 @@
       padding:4px 9px;border-radius:999px;
       border:1px solid rgba(255,255,255,.08);
       background:rgba(2,4,19,.65);
+    }
+
+    .tabs{
+      display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px
+    }
+    .tab{
+      font-size:11px;
+      padding:6px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(2,4,19,.6);
+      color:var(--fg-soft);
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab[aria-selected="true"]{
+      background:rgba(255,255,255,.10);
+      color:var(--fg);
+      border-color:rgba(255,255,255,.14);
     }
 
     .code-window{
@@ -211,7 +228,7 @@
       white-space:pre;
       line-height:1.5;
       margin:0 0 10px;
-      min-height:160px;
+      min-height:180px;
     }
     .code-window-header{
       display:flex;align-items:center;justify-content:space-between;
@@ -225,39 +242,11 @@
     .panel-footer{font-size:11px;color:var(--fg-soft)}
     .panel-footer b{color:var(--fg)}
 
-    .req-row{
-      display:flex;gap:10px;align-items:center;justify-content:space-between;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(2,4,19,.55);
-      border-radius:12px;
-      padding:8px 10px;
-      margin:0 0 10px;
-      overflow:hidden;
-    }
-    .req-row .label{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:rgba(223,230,255,.55)}
-    .req-row .url{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
-      font-size:11px;color:#dde3ff;
-      overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
-      max-width:100%;
-    }
-    .copy-btn{
-      border:1px solid rgba(255,255,255,.10);
-      background:rgba(10,13,40,.55);
-      color:#dde3ff;
-      border-radius:10px;
-      padding:6px 9px;
-      font-size:11px;
-      cursor:pointer;
-      white-space:nowrap;
-    }
-    .copy-btn:active{transform:translateY(1px)}
-
     section{margin-top:44px}
     .section-kicker{font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--fg-soft);margin-bottom:6px}
     h2.section-title{font-size:20px;margin:0 0 8px}
-    .section-sub{font-size:13px;color:var(--fg-soft);max-width:760px;margin:0 0 16px}
-
+    .section-sub{font-size:13px;color:var(--fg-soft);max-width:820px;margin:0 0 16px}
+    .section-sub b{color:var(--fg)}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
     .feature{
       border-radius:var(--radius-lg);
@@ -268,6 +257,7 @@
     }
     .feature h3{margin:0 0 6px;font-size:13px}
     .feature p{margin:0;font-size:12px;line-height:1.6;color:var(--fg-soft)}
+    .feature code{font-size:11px}
 
     .table-wrap{
       border-radius:var(--radius-lg);
@@ -297,6 +287,40 @@
       line-height:1.5;
     }
 
+    .compare{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:16px;
+      align-items:start;
+    }
+    @media (max-width:980px){
+      .compare{grid-template-columns:1fr}
+    }
+    .compare-card{
+      border-radius:var(--radius-lg);
+      border:1px solid var(--border-soft);
+      background:rgba(5,8,28,.96);
+      padding:12px 12px 14px;
+    }
+    .compare-title{
+      display:flex;justify-content:space-between;gap:10px;align-items:center;margin:0 0 8px
+    }
+    .compare-title b{font-size:12px;letter-spacing:.10em;text-transform:uppercase;color:var(--fg)}
+    .compare-title span{
+      font-size:11px;color:var(--fg-soft);
+      padding:3px 8px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(2,4,19,.65);
+      white-space:nowrap;
+    }
+    .compare-note{
+      font-size:12px;color:var(--fg-soft);line-height:1.6;margin:0 0 10px
+    }
+    .compare-note b{color:var(--fg)}
+    .compare-list{
+      margin:0;padding-left:18px;color:var(--fg-soft);font-size:12px;line-height:1.65
+    }
+
     footer{
       margin-top:44px;padding-top:18px;
       border-top:1px solid rgba(27,31,60,.95);
@@ -321,10 +345,10 @@
       </div>
       <nav>
         <a href="#try">Try</a>
-        <a href="#why">Why</a>
+        <a href="#value">Value</a>
+        <a href="#compare">Compare</a>
         <a href="#contract">JSON</a>
         <a href="#limits">Limits</a>
-        <a href="#contact">Contact</a>
         <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
         <a class="nav-cta" href="#try"><span class="dot"></span> Free sandbox</a>
       </nav>
@@ -340,31 +364,32 @@
         <h1><span class="highlight">AI2JSON</span> turns any public webpage into clean JSON for AI reading.</h1>
 
         <p class="lead">
-          Most webpages are noisy: menus, footers, cookie banners, scripts. AI2JSON extracts the real content and returns a stable JSON structure you can feed into LLMs and RAG pipelines.
-          <b>No summary. No interpretation.</b>
+          Most webpages are noisy: menus, footers, cookie banners, scripts. AI2JSON extracts the real content and returns a stable JSON document you can feed into LLMs and RAG pipelines.
+          <b>No summary. No interpretation.</b> Just readable content + structure + a hash.
         </p>
 
         <div class="hero-pills">
           <div class="pill"><span class="pill-dot"></span>Extract main content</div>
-          <div class="pill">Keep <code>sections[]</code></div>
-          <div class="pill">Deterministic JSON</div>
-          <div class="pill">Content hash for diffing</div>
+          <div class="pill">Keep <code>sections[]</code> structure</div>
+          <div class="pill">Deterministic output</div>
+          <div class="pill">Hash for diffing</div>
         </div>
 
         <div class="cta-row">
           <a href="#try" class="btn">Try with a URL</a>
-          <a href="https://github.com/BACOUL/ai2json" class="btn-outline" target="_blank" rel="noopener noreferrer">Open GitHub</a>
+          <a href="#compare" class="btn-outline">See AI comparison</a>
         </div>
 
         <div class="hero-note">
           <span>Free. No API key.</span>
-          <span>Rate-limited public sandbox.</span>
-          <span>Public HTTP(S) pages only.</span>
+          <span>Rate-limited sandbox.</span>
+          <span>Public HTTP(S) only.</span>
+          <span>Spec: <b>webpage.ai.v0.1</b></span>
         </div>
       </div>
 
-      <aside class="hero-panel" id="try" aria-label="Try AI2JSON">
-        <div class="panel-title">Try it now</div>
+      <aside class="hero-panel" id="try">
+        <div class="panel-title">Try it now (live sandbox)</div>
 
         <div class="field">
           <input id="url" class="input" type="url" inputmode="url" autocomplete="off"
@@ -375,74 +400,129 @@
         <div class="mini-row" aria-label="sandbox limits">
           <span class="mini">No API key</span>
           <span class="mini">Rate-limited</span>
-          <span class="mini">Timeout & size limits</span>
+          <span class="mini">Public pages only</span>
+          <span class="mini">No JS rendering (v0.1)</span>
         </div>
 
-        <div class="req-row" aria-label="request url">
-          <div style="min-width:0">
-            <div class="label">Request URL</div>
-            <div class="url" id="reqUrl">—</div>
-          </div>
-          <button class="copy-btn" id="copyReq" type="button">Copy</button>
+        <div class="tabs" role="tablist" aria-label="output views">
+          <span class="tab" role="tab" id="tab-json" aria-selected="true" tabindex="0">JSON</span>
+          <span class="tab" role="tab" id="tab-prompt" aria-selected="false" tabindex="-1">Prompt-ready</span>
+          <span class="tab" role="tab" id="tab-curl" aria-selected="false" tabindex="-1">curl</span>
+          <span class="tab" role="tab" id="tab-errors" aria-selected="false" tabindex="-1">Errors</span>
         </div>
 
         <div class="code-window" id="out" aria-live="polite">
 {
   "spec": "webpage.ai.v0.1",
-  "url": "https://example.com",
-  "canonical_url": "https://example.com",
+  "url": "https://example.com/article",
+  "canonical_url": "https://example.com/article",
   "last_fetched": "2025-01-02T10:11:12Z",
   "language": "en",
   "content_hash": "sha256:…",
-  "title": "Example Page",
-  "summary": "…",
-  "type": "unknown",
+  "title": "Example page title",
+  "summary": "",
+  "type": "article",
   "sections": [
     { "heading": null, "level": 0, "id": "content", "text": "Clean extracted content…" }
   ],
   "links": [],
-  "meta": {},
+  "meta": { "source": "https://example.com/article" },
   "proof": {}
 }
         </div>
 
-        <div class="panel-footer">
-          Compare results: feed your LLM with <b>title</b> + <b>sections[].text</b> instead of raw HTML. You get less noise and better reproducibility.
+        <div class="panel-footer" id="panelFooter">
+          For LLM usage: send <b>title</b> + <b>sections[].text</b>. Keep <b>content_hash</b> to detect changes over time.
         </div>
       </aside>
     </main>
 
-    <section id="why">
-      <div class="section-kicker">Why it helps</div>
-      <h2 class="section-title">A small contract between the web and your AI stack.</h2>
+    <section id="value">
+      <div class="section-kicker">Value</div>
+      <h2 class="section-title">Why JSON helps your AI more than raw HTML.</h2>
       <p class="section-sub">
-        AI2JSON does one thing: turn messy HTML into clean, predictable inputs for prompts, agents, and RAG pipelines.
+        LLMs can ingest HTML, but it’s inefficient and error-prone: boilerplate dominates tokens, chunking is brittle, and “what did the model really read?” is unclear.
+        AI2JSON gives you a <b>small, predictable contract</b> so your AI pipeline becomes simpler, cheaper, and easier to debug.
       </p>
       <div class="grid">
         <div class="feature">
-          <h3>Less noise</h3>
-          <p>Remove boilerplate (nav, footers, banners) so models focus on content.</p>
+          <h3>Less token waste</h3>
+          <p>Navigation, cookie banners, and layout noise are removed so prompts are mostly <b>real content</b>.</p>
         </div>
         <div class="feature">
-          <h3>Better chunks</h3>
-          <p><code>sections[]</code> are natural units for prompting, RAG indexing, and change tracking.</p>
+          <h3>Natural chunks</h3>
+          <p><code>sections[]</code> are stable content blocks for prompting and RAG indexing (better than “split every N chars”).</p>
         </div>
         <div class="feature">
-          <h3>Deterministic</h3>
-          <p>Stable JSON makes debugging and reproducibility easier than raw HTML scraping.</p>
+          <h3>Deterministic debugging</h3>
+          <p>Same URL → same schema. Easier to reproduce issues vs. scraping/parsing HTML differently per project.</p>
         </div>
         <div class="feature">
-          <h3>Hash for diffing</h3>
-          <p>A SHA-256 fingerprint lets you detect meaningful content changes over time.</p>
+          <h3>Content fingerprint</h3>
+          <p><code>content_hash</code> lets you detect meaningful changes (docs/regulations/ToS) and avoid re-embedding unchanged pages.</p>
         </div>
+      </div>
+    </section>
+
+    <section id="compare">
+      <div class="section-kicker">Compare</div>
+      <h2 class="section-title">What changes vs. “classic web reading”.</h2>
+      <p class="section-sub">
+        A fair comparison is not “AI can’t read HTML”. It can. The real difference is: <b>cost, reliability, and traceability</b>.
+      </p>
+
+      <div class="compare">
+        <div class="compare-card">
+          <div class="compare-title">
+            <b>Without AI2JSON</b>
+            <span>raw HTML / ad-hoc parsing</span>
+          </div>
+          <p class="compare-note">
+            Your agent fetches a page and either dumps HTML into a prompt or implements custom parsing.
+          </p>
+          <ul class="compare-list">
+            <li><b>Token bloat:</b> menus/footers/scripts dominate context.</li>
+            <li><b>Brittle parsing:</b> every site breaks differently.</li>
+            <li><b>Chunking guesswork:</b> “split by N chars” loses structure.</li>
+            <li><b>Hard to prove input:</b> unclear what exact text was used later.</li>
+          </ul>
+        </div>
+
+        <div class="compare-card">
+          <div class="compare-title">
+            <b>With AI2JSON</b>
+            <span>stable JSON contract</span>
+          </div>
+          <p class="compare-note">
+            Your agent gets <b>title + sections[]</b> in a predictable schema, plus a <b>SHA-256</b> fingerprint.
+          </p>
+          <ul class="compare-list">
+            <li><b>Cleaner prompts:</b> content-first, less noise.</li>
+            <li><b>Stable ingestion:</b> one schema across all sites.</li>
+            <li><b>Better RAG:</b> sections are natural chunks for embeddings.</li>
+            <li><b>Traceability:</b> store <b>content_hash</b> to prove what was read.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="mono-block" style="margin-top:14px">
+Prompt template (minimal)
+  You are given structured page content:
+  - title: {{title}}
+  - sections: {{sections}}   (each has heading, level, text)
+  Task: Answer using only these sections. Cite section ids when possible.
+
+Tip
+  For most use cases, only send:
+    title + sections[].text
       </div>
     </section>
 
     <section id="contract">
       <div class="section-kicker">JSON contract</div>
-      <h2 class="section-title">webpage.ai.v0.1 (minimal and LLM-friendly).</h2>
+      <h2 class="section-title">webpage.ai.v0.1 — minimal, predictable, AI-friendly.</h2>
       <p class="section-sub">
-        The main payload is always <code>sections[].text</code>. Everything else is optional metadata for tracking and reproducibility.
+        This sandbox returns <b>webpage.ai.v0.1</b>. In v0.1, the payload is intentionally simple: one main section with extracted text, plus metadata and a hash.
       </p>
 
       <div class="table-wrap">
@@ -455,65 +535,94 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><code>spec</code></td><td>string</td><td>Always <code>webpage.ai.v0.1</code>.</td></tr>
+            <tr><td><code>spec</code></td><td>string</td><td>Always <code>"webpage.ai.v0.1"</code>.</td></tr>
             <tr><td><code>url</code></td><td>string</td><td>Requested URL.</td></tr>
-            <tr><td><code>canonical_url</code></td><td>string</td><td>Canonical URL (best effort).</td></tr>
-            <tr><td><code>last_fetched</code></td><td>string</td><td>ISO 8601 timestamp.</td></tr>
-            <tr><td><code>language</code></td><td>string/null</td><td>Best-guess language code.</td></tr>
-            <tr><td><code>content_hash</code></td><td>string</td><td>SHA-256 over extracted text (<code>sha256:</code> prefix).</td></tr>
+            <tr><td><code>canonical_url</code></td><td>string</td><td>Canonical URL (if detected).</td></tr>
+            <tr><td><code>last_fetched</code></td><td>string</td><td>ISO 8601 timestamp (UTC).</td></tr>
+            <tr><td><code>language</code></td><td>string/null</td><td>Best-effort language (from HTML).</td></tr>
+            <tr><td><code>content_hash</code></td><td>string</td><td>SHA-256 of extracted text (prefixed <code>sha256:</code>).</td></tr>
             <tr><td><code>title</code></td><td>string</td><td>Page title.</td></tr>
-            <tr><td><code>summary</code></td><td>string</td><td>Short excerpt / heuristic summary (may be empty).</td></tr>
-            <tr><td><code>type</code></td><td>string</td><td><code>article</code>, <code>homepage</code>, or <code>unknown</code>.</td></tr>
-            <tr><td><code>sections[]</code></td><td>array</td><td>Ordered content blocks.</td></tr>
-            <tr><td><code>sections[].heading</code></td><td>string/null</td><td>Heading (if any).</td></tr>
-            <tr><td><code>sections[].level</code></td><td>number</td><td>Heading level (0–3).</td></tr>
-            <tr><td><code>sections[].id</code></td><td>string</td><td>Stable section id.</td></tr>
-            <tr><td><code>sections[].text</code></td><td>string</td><td>Clean text for this section.</td></tr>
+            <tr><td><code>type</code></td><td>string</td><td><code>article</code> / <code>homepage</code> / <code>unknown</code>.</td></tr>
+            <tr><td><code>sections[]</code></td><td>array</td><td>Ordered blocks: <code>heading</code>, <code>level</code>, <code>id</code>, <code>text</code>.</td></tr>
+            <tr><td><code>meta</code></td><td>object</td><td>Best-effort metadata (v0.1: <code>source</code>).</td></tr>
           </tbody>
         </table>
       </div>
 
-      <p class="section-sub" style="margin-top:12px;">
-        Public sandbox endpoint:
-      </p>
-      <div class="mono-block" id="endpointBlock">GET /v1/transform?url=&lt;ENCODED_URL&gt;</div>
-    </section>
+      <div class="mono-block" style="margin-top:14px">
+Sandbox API (your live endpoint)
+  GET https://ai2json-apiv1.jeason-bacoul.workers.dev/v1/transform?url=<ENCODED_URL>
 
-    <section id="limits">
-      <div class="section-kicker">Sandbox limits</div>
-      <h2 class="section-title">Free by default, protected against abuse.</h2>
-      <p class="section-sub">
-        This is a public sandbox: rate-limited, restricted to public HTTP(S) URLs, and blocked for local/private networks. Very large pages and slow responses may be rejected.
-      </p>
-      <div class="mono-block">
-Responses (JSON)
-  200  OK
-  400  bad_request (missing/invalid url)
-  403  forbidden (private/local targets blocked)
-  413  too_large
-  415  unsupported_content_type (HTML only)
-  429  rate_limited (check Retry-After)
-  5xx  upstream_or_internal
-
-LLM prompt tip
-  Use only: title + sections[].text
+Example
+  https://ai2json-apiv1.jeason-bacoul.workers.dev/v1/transform?url=https://wikipedia.org
       </div>
     </section>
 
-    <section id="contact">
-      <div class="section-kicker">Contact</div>
-      <h2 class="section-title">Questions, feedback, early users</h2>
+    <section id="limits">
+      <div class="section-kicker">Limits & abuse protection</div>
+      <h2 class="section-title">Free by default, protected by design.</h2>
       <p class="section-sub">
-        Email: <a href="mailto:jeason.bacoul@gmail.com">jeason.bacoul@gmail.com</a>
+        This is a public sandbox. It is <b>rate-limited</b>, restricted to <b>public HTTP(S) URLs</b>, and blocks obvious private/localhost targets (basic SSRF hardening).
+        Very large pages or slow upstream responses may be rejected.
       </p>
+
+      <div class="mono-block">
+Common responses (JSON)
+  200  OK
+  400  bad_request (missing/invalid url)
+  403  forbidden (private hosts / non-http(s))
+  415  unsupported_content_type (non-HTML)
+  429  rate_limited (Retry-After header)
+  5xx  upstream_or_internal
+
+Notes
+  - No API key in sandbox.
+  - No JS rendering in v0.1 (static HTML only).
+  - Best-effort extraction (some pages will be not_extractable).
+      </div>
+
+      <div class="grid" style="margin-top:16px">
+        <div class="feature">
+          <h3>Node.js fetch example</h3>
+          <p>Store <code>content_hash</code> to skip re-processing unchanged pages.</p>
+          <div class="mono-block" style="margin-top:10px">
+const url = "https://wikipedia.org";
+const api = "https://ai2json-apiv1.jeason-bacoul.workers.dev/v1/transform?url=" + encodeURIComponent(url);
+
+const res = await fetch(api, { headers: { "Accept": "application/json" } });
+if (!res.ok) throw new Error("HTTP " + res.status);
+
+const doc = await res.json();
+// Use in prompts / RAG:
+const payload = {
+  title: doc.title,
+  sections: doc.sections?.map(s => ({ id: s.id, heading: s.heading, text: s.text })) ?? []
+};
+console.log(doc.content_hash, payload);
+          </div>
+        </div>
+        <div class="feature">
+          <h3>RAG chunking tip</h3>
+          <p>Index each section separately: <code>section.id</code> is your stable reference.</p>
+          <div class="mono-block" style="margin-top:10px">
+chunks = sections.map(s => ({
+  id: s.id,
+  text: (s.heading ? (s.heading + "\n") : "") + s.text
+}));
+
+// embeddings(chunks[i].text)
+// store metadata: { url, content_hash, section_id: chunks[i].id }
+          </div>
+        </div>
+      </div>
     </section>
 
     <footer>
       <span>© AI2JSON — Web → JSON for AI reading.</span>
       <nav>
-        <a href="#try">Try</a>
-        <a href="#contact">Contact</a>
         <a href="https://github.com/BACOUL/ai2json" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="#try">Try</a>
+        <a href="#compare">Compare</a>
         <a href="mailto:jeason.bacoul@gmail.com">jeason.bacoul@gmail.com</a>
       </nav>
     </footer>
@@ -521,131 +630,191 @@ LLM prompt tip
 
   <script>
     (function(){
-      // Production API base (your real Worker)
       const API_BASE = "https://ai2json-apiv1.jeason-bacoul.workers.dev";
-      const ENDPOINT_PATH = "/v1/transform";
+      const ENDPOINT = API_BASE.replace(/\/$/,"") + "/v1/transform?url=";
 
       const $url = document.getElementById("url");
       const $btn = document.getElementById("convert");
       const $out = document.getElementById("out");
-      const $reqUrl = document.getElementById("reqUrl");
-      const $copyReq = document.getElementById("copyReq");
-      const $endpointBlock = document.getElementById("endpointBlock");
+      const $footer = document.getElementById("panelFooter");
+
+      const $tabJson = document.getElementById("tab-json");
+      const $tabPrompt = document.getElementById("tab-prompt");
+      const $tabCurl = document.getElementById("tab-curl");
+      const $tabErrors = document.getElementById("tab-errors");
+
+      let lastJson = null;
+      let lastUrl = "";
 
       function safeText(v){ return (v == null) ? "" : String(v); }
 
-      function render(obj){
+      function renderText(text){
+        $out.textContent = text;
+      }
+      function renderJson(obj){
         $out.textContent = JSON.stringify(obj, null, 2);
       }
-
       function errorObj(code, message, extra){
-        return Object.assign({ error: { code: code, message: message } }, extra || {});
+        const o = { error: { code: code, message: message } };
+        if(extra && typeof extra === "object") for(const k in extra) o[k] = extra[k];
+        return o;
       }
 
-      function buildRequestUrl(target){
-        return API_BASE.replace(/\/$/,"") + ENDPOINT_PATH + "?url=" + encodeURIComponent(target);
-      }
-
-      function setRequestUrl(u){
-        $reqUrl.textContent = u || "—";
-        $reqUrl.title = u || "";
-      }
-
-      async function copyText(text){
-        try{
-          await navigator.clipboard.writeText(text);
-          return true;
-        }catch{
-          // fallback
-          const ta = document.createElement("textarea");
-          ta.value = text;
-          ta.style.position = "fixed";
-          ta.style.left = "-9999px";
-          document.body.appendChild(ta);
-          ta.select();
-          try{
-            const ok = document.execCommand("copy");
-            document.body.removeChild(ta);
-            return ok;
-          }catch{
-            document.body.removeChild(ta);
-            return false;
-          }
+      function setTab(selected){
+        const tabs = [$tabJson,$tabPrompt,$tabCurl,$tabErrors];
+        for(const t of tabs){
+          const on = (t === selected);
+          t.setAttribute("aria-selected", on ? "true" : "false");
+          t.tabIndex = on ? 0 : -1;
         }
+      }
+
+      function viewJson(){
+        setTab($tabJson);
+        if(lastJson) renderJson(lastJson);
+        else renderText("Paste a URL and click Convert.");
+        $footer.innerHTML = 'For LLM usage: send <b>title</b> + <b>sections[].text</b>. Keep <b>content_hash</b> to detect changes over time.';
+      }
+
+      function viewPrompt(){
+        setTab($tabPrompt);
+        if(!lastJson){
+          renderText("Convert a URL first, then switch to Prompt-ready.");
+          return;
+        }
+        const title = safeText(lastJson.title || "");
+        const sections = Array.isArray(lastJson.sections) ? lastJson.sections : [];
+        const lines = [];
+        lines.push("SYSTEM: You are given structured webpage content. Use ONLY this content.");
+        lines.push("");
+        lines.push("TITLE:");
+        lines.push(title || "(no title)");
+        lines.push("");
+        lines.push("SECTIONS:");
+        for(const s of sections){
+          const id = safeText(s && s.id);
+          const h = (s && s.heading != null) ? safeText(s.heading) : "";
+          const txt = safeText(s && s.text);
+          lines.push("- id: " + (id || "content"));
+          if(h) lines.push("  heading: " + h);
+          lines.push("  text: " + txt);
+          lines.push("");
+        }
+        lines.push("TASK: Answer the user's question using only the sections above. If you cite, mention section ids.");
+        renderText(lines.join("\n"));
+        $footer.innerHTML = 'Prompt-ready view: copy this into your agent/tool call. Keep <b>content_hash</b> for traceability.';
+      }
+
+      function viewCurl(){
+        setTab($tabCurl);
+        const u = lastUrl || safeText($url.value).trim() || "https://wikipedia.org";
+        const full = ENDPOINT + encodeURIComponent(u);
+        renderText('curl "' + full + '" -H "Accept: application/json"');
+        $footer.innerHTML = 'curl view: simplest way to test without any SDK.';
+      }
+
+      function viewErrors(){
+        setTab($tabErrors);
+        renderText([
+          "Error examples (JSON):",
+          "",
+          "400 bad_request",
+          JSON.stringify({ error: { code: "bad_request", message: "Missing \"url\" query parameter." } }, null, 2),
+          "",
+          "403 forbidden",
+          JSON.stringify({ error: { code: "forbidden", message: "Target host is not allowed." } }, null, 2),
+          "",
+          "429 rate_limited",
+          JSON.stringify({ error: { code: "rate_limited", message: "Too many requests. Try again shortly." }, retry_after_seconds: 10 }, null, 2),
+          "",
+          "415 unsupported_content_type",
+          JSON.stringify({ error: { code: "unsupported_content_type", message: "Only HTML pages are supported in v0.1." } }, null, 2)
+        ].join("\n"));
+        $footer.innerHTML = 'Errors view: build robust clients. For 429, read <b>Retry-After</b>.';
       }
 
       async function run(){
         const raw = safeText($url.value).trim();
         if(!raw){
-          setRequestUrl("");
-          return render(errorObj("missing_url","Paste a public URL to convert."));
+          lastJson = null;
+          lastUrl = "";
+          viewJson();
+          renderJson(errorObj("missing_url","Paste a public URL to convert."));
+          return;
         }
 
         let u;
-        try { u = new URL(raw); } catch {
-          setRequestUrl("");
-          return render(errorObj("invalid_url","Invalid URL format."));
+        try { u = new URL(raw); }
+        catch {
+          lastJson = null; lastUrl = raw;
+          viewJson();
+          renderJson(errorObj("invalid_url","Invalid URL format."));
+          return;
         }
         if(u.protocol !== "http:" && u.protocol !== "https:"){
-          setRequestUrl("");
-          return render(errorObj("invalid_url","URL must start with http(s)."));
+          lastJson = null; lastUrl = raw;
+          viewJson();
+          renderJson(errorObj("invalid_url","URL must start with http(s)."));
+          return;
         }
-
-        const req = buildRequestUrl(raw);
-        setRequestUrl(req);
 
         $btn.disabled = true;
         $btn.textContent = "Converting…";
-        render({ status: "fetching", url: raw });
+
+        lastUrl = raw;
+        lastJson = null;
+        viewJson();
+        renderJson({ status: "fetching", url: raw });
 
         try{
-          const res = await fetch(req, { method: "GET", headers: { "Accept":"application/json" } });
+          const endpoint = ENDPOINT + encodeURIComponent(raw);
+          const res = await fetch(endpoint, { method: "GET", headers: { "Accept":"application/json" } });
           const ct = res.headers.get("content-type") || "";
-          const retryAfter = res.headers.get("retry-after");
 
           let data = null;
           if(ct.includes("application/json")){
             data = await res.json();
           }else{
             const text = await res.text();
-            data = errorObj("bad_response","Expected JSON but received non-JSON response.", { excerpt: safeText(text).slice(0, 200) });
+            data = errorObj("bad_response","Expected JSON but received non-JSON.", { excerpt: safeText(text).slice(0, 220) });
           }
 
           if(!res.ok){
-            if(res.status === 429){
-              render(errorObj(
-                "rate_limited",
-                "Rate limited. Try again shortly.",
-                { http_status: 429, retry_after_seconds: retryAfter ? Number(retryAfter) : undefined, response: data }
-              ));
-              return;
-            }
-            render(Object.assign({ http_status: res.status }, data || errorObj("error","Request failed.")));
-            return;
+            const retryAfter = res.headers.get("retry-after");
+            const out = Object.assign({ http_status: res.status }, (data || errorObj("error","Request failed.")));
+            if(retryAfter) out.retry_after = retryAfter;
+            renderJson(out);
+          }else{
+            lastJson = data;
+            renderJson(data);
           }
-
-          render(data);
         }catch(e){
-          render(errorObj("network_error", safeText(e && e.message ? e.message : e)));
+          renderJson(errorObj("network_error", safeText(e && e.message ? e.message : e)));
         }finally{
           $btn.disabled = false;
           $btn.textContent = "Convert";
         }
       }
 
+      function onTabClick(tab){
+        if(tab === $tabJson) return viewJson();
+        if(tab === $tabPrompt) return viewPrompt();
+        if(tab === $tabCurl) return viewCurl();
+        if(tab === $tabErrors) return viewErrors();
+      }
+
+      [$tabJson,$tabPrompt,$tabCurl,$tabErrors].forEach(tab=>{
+        tab.addEventListener("click", ()=>onTabClick(tab));
+        tab.addEventListener("keydown",(e)=>{
+          if(e.key === "Enter" || e.key === " "){ e.preventDefault(); onTabClick(tab); }
+        });
+      });
+
       $btn.addEventListener("click", run);
       $url.addEventListener("keydown", (e)=>{ if(e.key === "Enter") run(); });
 
-      $copyReq.addEventListener("click", async ()=>{
-        const text = safeText($reqUrl.textContent).trim();
-        if(!text || text === "—") return;
-        const ok = await copyText(text);
-        $copyReq.textContent = ok ? "Copied" : "Copy";
-        setTimeout(()=>{ $copyReq.textContent = "Copy"; }, 900);
-      });
-
-      // Show endpoint with real base
-      $endpointBlock.textContent = API_BASE.replace(/\/$/,"") + ENDPOINT_PATH + "?url=<ENCODED_URL>";
+      // default view
+      viewJson();
     })();
   </script>
 </body>
